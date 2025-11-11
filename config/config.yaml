@@ -1,0 +1,33 @@
+thresholds:
+  deauth_per_sec: 20
+  probe_req_per_sec: 50
+  beacon_per_sec: 200
+
+windows_sec:
+  deauth: 5
+  probe_req: 5
+  beacon: 5
+  stats_interval: 1
+  evil_twin_window: 5
+
+evil_twin:
+  distinct_bssids_threshold: 3
+
+anomaly:
+  use_zscore: true
+  z_threshold: 3.0
+
+# Optional: seed baselines (used if present and not reset via CLI)
+# If you omit this block, the script will *learn* baselines online (if enabled)
+baselines:
+  # n is "confidence"/weight; 30–100 is typical. Larger n means updates move slow.
+  n: 50
+  deauth:
+    mean: 1.0
+    std: 1.0
+  probe:
+    mean: 5.0
+    std: 3.0
+  beacon:
+    mean: 50.0
+    std: 10.0
