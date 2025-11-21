@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Wireless IDS — Offline Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js + time adapter -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <div class="max-w-7xl mx-auto p-6 space-y-6">
+    <header class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-3">
+      <div>
+        <h1 class="text-2xl font-semibold">Wireless IDS — Offline Dashboard</h1>
+        <p class="text-sm text-gray-600">
+          Metrics: <code class="bg-gray-100 px-1 rounded">{{ metrics_csv }}</code>
+          &nbsp; Alerts: <code class="bg-gray-100 px-1 rounded">{{ alerts_jsonl }}</code>
+        </p>
+      </div>
+      <div class="text-right">
+        <button id="refreshBtn" class="px-3 py-2 rounded-lg bg-blue-600 text-white text-sm">Refresh now</button>
+        <label class="ml-3 text-sm">
+          <input id="autorefresh" type="checkbox" class="align-middle" checked />
+          Auto-refresh (5s)
+        </label>
+        <!-- Y-scale mode selector -->
+        <select id="yScaleMode" class="ml-3 text-sm border rounded px-2 py-1">
+          <option value="auto">Y-scale: auto</option>
+          <option value="p95cap">Y-scale: cap @ P95</option>
+          <option value="log">Y-scale: log</option>
+          <option value="twoaxis">Y-scale: split axes</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- Stat cards -->
+    <section id="stats" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="bg-white shadow rounded-xl p-4">
+        <div class="text-xs text-gray-500">Windows</div>
+        <div id="statWindows" class="text-2xl font-semibold">—</div>
+      </div>
+      <div class="bg-white shadow rounded-xl p-4">
+        <div class="text-xs text-gray-500">Alerts</div>
+        <div id="statAlerts" class="text-2xl font-semibold">—</div>
+      </div>
+      <div class="bg-white shadow rounded-xl p-4">
+        <div class="text-xs text-gray-500">Last window (UTC)</div>
+        <div id="statLastTs" class="text-lg font-mono">—</div>
+      </div>
+      <div class="bg-white shadow rounded-xl p-4">
+        <div class="text-xs text-gray-500">Thresholds</div>
+        <div class="text-sm leading-5">
+          <div>Deauth ≤ <span class="font-semibold">{{ thresholds.deauth_per_sec }}</span></div>
+          <div>Probe ≤ <span class="font-semibold">{{ thresholds.probe_req_per_sec }}</span></div>
+          <div>Beacon ≤ <span class="font-semibold">{{ thresholds.beacon_per_sec }}</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white shadow rounded-xl p-4">
+        <div class="text-sm font-medium mb-2">Deauth / Probe / Beacon (per window)</div>
+        <canvas id="chartMain" height="180"></canvas>
+      </div>
+      <div class="bg-white shadow rounded-xl p-4">
+        <div class="text-sm font-medium mb-2">Evil-Twin signal (max distinct BSSIDs / SSID)</div>
+        <canvas id="chartEvil" height="180"></canvas>
+      </div>
+      <div class="bg-white shadow rounded-xl p-4">
+        <div class="text-sm font-medium mb-2">Top per-sender bursts (deauth / probe / beacon)</div>
+        <canvas id="chartTop" height="180"></canvas>
+      </div>
+      <div class="bg-white shadow rounded-xl p-4">
+        <div class="text-sm font-medium mb-2">Alerts timeline (by kind)</div>
+        <canvas id="chartAlerts" height="180"></canvas>
+      </div>
+    </section>
+
+    <!-- Alerts table -->
+    <section class="bg-white shadow rounded-xl p-4">
+      <div class="flex items-center justify-between mb-3">
+        <div class="text-sm font-medium">Recent Alerts</div>
+        <div class="space-x-2">
+          <select id="filterKind" class="text-sm border rounded px-2 py-1">
+            <option value="">All kinds</option>
+            <option value="DEAUTH">DEAUTH</option>
+            <option value="PROBE">PROBE</option>
+            <option value="BEACON">BEACON</option>
+            <option value="EVIL_TWIN">EVIL_TWIN</option>
+          </select>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500">
+              <th class="py-2 pr-4">Time (UTC)</th>
+              <th class="py-2 pr-4">Kind</th>
+              <th class="py-2 pr-4">Details</th>
+            </tr>
+          </thead>
+          <tbody id="alertsBody" class="align-top"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="text-xs text-gray-500 text-center">
+      Auto-reads files on disk. Refresh cadence: 5s (configurable).
+    </footer>
+  </div>
+
+  <script>
+    // -------- helpers for scale modes --------
+    function quantile(arr, q) {
+      const a = arr.filter(v => typeof v === 'number' && !isNaN(v))
+                   .slice().sort((x,y)=>x-y);
+      if (!a.length) return null;
+      const pos = (a.length - 1) * q;
+      const base = Math.floor(pos);
+      const rest = pos - base;
+      return a[base] + (a[base+1] !== undefined ? rest*(a[base+1]-a[base]) : 0);
+    }
+    function seriesValues(datasets) {
+      return datasets.flatMap(ds => ds.data.map(p => p?.y).filter(v => v != null));
+    }
+
+    const chartOpts = {
+      animation: false,
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: { x: { type: 'time', time: { unit: 'second' }}, y: { beginAtZero: true } },
+      plugins: { legend: { position: 'bottom' } }
+    };
+
+    let chartMain, chartEvil, chartTop, chartAlerts;
+
+    function makeCharts() {
+      const ctxMain = document.getElementById('chartMain').getContext('2d');
+      const ctxEvil = document.getElementById('chartEvil').getContext('2d');
+      const ctxTop  = document.getElementById('chartTop').getContext('2d');
+      const ctxAlrt = document.getElementById('chartAlerts').getContext('2d');
+
+      chartMain = new Chart(ctxMain, {
+        type: 'line',
+        data: { datasets: [
+          { label: 'Deauth', data: [], tension: 0.2 },
+          { label: 'Probe',  data: [], tension: 0.2 },
+          { label: 'Beacon', data: [], tension: 0.2 },
+        ]},
+        options: JSON.parse(JSON.stringify(chartOpts))
+      });
+
+      chartEvil = new Chart(ctxEvil, {
+        type: 'line',
+        data: { datasets: [
+          { label: 'Max distinct BSSIDs per SSID', data: [], tension: 0.2 }
+        ]},
+        options: JSON.parse(JSON.stringify(chartOpts))
+      });
+
+      chartTop = new Chart(ctxTop, {
+        type: 'line',
+        data: { datasets: [
+          { label: 'Top sender deauth', data: [], tension: 0.2 },
+          { label: 'Top sender probe',  data: [], tension: 0.2 },
+          { label: 'Top sender beacon', data: [], tension: 0.2 },
+        ]},
+        options: JSON.parse(JSON.stringify(chartOpts))
+      });
+
+      chartAlerts = new Chart(ctxAlrt, {
+        type: 'scatter',
+        data: { datasets: [{ label: 'Alerts', data: [] }] },
+        options: {
+          animation: false,
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { x: { type: 'time', time: { unit: 'second' }}, y: { display: false } },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function applyScaleMode() {
+      const mode = document.getElementById('yScaleMode').value;
+
+      // MAIN chart (Deauth/Probe/Beacon)
+      const main = chartMain;
+      const scales = main.options.scales;
+      scales.y = scales.y || { beginAtZero: true };
+      delete scales.y.max; delete scales.y.suggestedMax;
+      delete scales.y1;
+      for (const ds of main.data.datasets) ds.yAxisID = undefined;
+      scales.y.type = 'linear';
+
+      if (mode === 'log') {
+        scales.y.type = 'logarithmic';
+        for (const ds of main.data.datasets) {
+          ds.data = ds.data.map(p => (p && p.y > 0 ? p : { x: p.x, y: null }));
+        }
+      } else if (mode === 'p95cap') {
+        const p95 = quantile(seriesValues(main.data.datasets), 0.95);
+        if (p95) scales.y.max = Math.max(1, Math.ceil(p95));
+      } else if (mode === 'twoaxis') {
+        scales.y1 = { position: 'right', beginAtZero: true, grid: { drawOnChartArea: false } };
+        // datasets: 0=Deauth, 1=Probe, 2=Beacon
+        main.data.datasets[2].yAxisID = 'y1';
+        const leftP95  = quantile(seriesValues([main.data.datasets[0], main.data.datasets[1]]), 0.95);
+        const rightP95 = quantile(seriesValues([main.data.datasets[2]]), 0.95);
+        if (leftP95)  scales.y.max  = Math.max(1, Math.ceil(leftP95));
+        if (rightP95) scales.y1.max = Math.max(1, Math.ceil(rightP95));
+      }
+      main.update('none');
+
+      // EVIL + TOP charts
+      for (const chart of [chartEvil, chartTop]) {
+        const s = chart.options.scales;
+        s.y = s.y || { beginAtZero: true };
+        delete s.y.max; delete s.y.suggestedMax;
+        s.y.type = 'linear';
+        if (mode === 'log') {
+          s.y.type = 'logarithmic';
+          for (const ds of chart.data.datasets) {
+            ds.data = ds.data.map(p => (p && p.y > 0 ? p : { x: p.x, y: null }));
+          }
+        } else if (mode === 'p95cap' || mode === 'twoaxis') {
+          const p95 = quantile(seriesValues(chart.data.datasets), 0.95);
+          if (p95) s.y.max = Math.max(1, Math.ceil(p95));
+        }
+        chart.update('none');
+      }
+    }
+
+    async function loadSummary() {
+      const res = await fetch('/api/summary');
+      const j = await res.json();
+      document.getElementById('statWindows').textContent = j.windows ?? '—';
+      document.getElementById('statAlerts').textContent  = j.alerts ?? '—';
+      document.getElementById('statLastTs').textContent  = j.last_window_iso ?? '—';
+    }
+
+    async function loadMetrics() {
+      const res = await fetch('/api/metrics');
+      const m = await res.json();
+      chartMain.data.datasets[0].data = m.deauth;
+      chartMain.data.datasets[1].data = m.probe;
+      chartMain.data.datasets[2].data = m.beacon;
+      chartMain.update('none');
+
+      chartEvil.data.datasets[0].data = m.evmx; chartEvil.update('none');
+
+      chartTop.data.datasets[0].data = m.topd;
+      chartTop.data.datasets[1].data = m.topp;
+      chartTop.data.datasets[2].data = m.topb;
+      chartTop.update('none');
+
+      // Apply chosen y-scale after datasets are in place
+      await Promise.resolve();
+      applyScaleMode();
+    }
+
+    function renderAlertsTable(alerts) {
+      const body = document.getElementById('alertsBody');
+      body.innerHTML = '';
+      const items = alerts.slice().reverse();
+      for (const a of items.slice(0, 200)) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-2 pr-4 whitespace-nowrap font-mono">${a._ts_iso ?? '—'}</td>
+          <td class="py-2 pr-4"><span class="px-2 py-1 rounded bg-gray-100">${a.kind ?? '—'}</span></td>
+          <td class="py-2 pr-4"><pre class="text-xs bg-gray-50 p-2 rounded overflow-x-auto">${JSON.stringify(a.details || {}, null, 2)}</pre></td>
+        `;
+        body.appendChild(tr);
+      }
+    }
+
+    async function loadAlerts() {
+      const kind = document.getElementById('filterKind').value || '';
+      const url  = kind ? `/api/alerts?kind=${encodeURIComponent(kind)}` : '/api/alerts';
+      const res = await fetch(url);
+      const j = await res.json();
+      const pts = j.alerts.map((a, idx) => ({ x: (a._ts ? a._ts*1000 : null), y: idx }));
+      chartAlerts.data.datasets[0].data = pts;
+      chartAlerts.update('none');
+      renderAlertsTable(j.alerts);
+    }
+
+    async function refreshAll() {
+      await Promise.all([loadSummary(), loadMetrics(), loadAlerts()]);
+    }
+
+    // boot
+    makeCharts();
+    refreshAll();
+
+    document.getElementById('refreshBtn').addEventListener('click', refreshAll);
+    document.getElementById('filterKind').addEventListener('change', loadAlerts);
+    document.getElementById('yScaleMode').addEventListener('change', applyScaleMode);
+
+    // auto-refresh
+    let timer = setInterval(refreshAll, 5000);
+    document.getElementById('autorefresh').addEventListener('change', (e) => {
+      if (e.target.checked) {
+        timer = setInterval(refreshAll, 5000);
+      } else {
+        clearInterval(timer);
+      }
+    });
+  </script>
+</body>
+</html>
