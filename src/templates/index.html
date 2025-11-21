@@ -1,315 +1,542 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Wireless IDS — Offline Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Tailwind (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js + time adapter -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+  <meta charset="UTF-8" />
+  <title>Wi-Fi IDS Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Chart.js -->
+  <script src="chart.js"></script>
+  <style>
+    :root {
+      --bg-dark: #050816;
+      --bg-card: #0f172a;
+      --accent: #3b82f6;
+      --accent-soft: rgba(59,130,246,0.2);
+      --accent-danger: #ef4444;
+      --accent-warning: #eab308;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-subtle: #1f2937;
+      --radius-xl: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      background: radial-gradient(circle at top, #1f2933, #020617);
+      color: var(--text-main);
+    }
+
+    .layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1.4fr;
+      grid-gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .status-bar {
+      margin-bottom: 16px;
+      padding: 14px 18px;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(90deg, rgba(15,23,42,0.95), rgba(15,23,42,0.7));
+      box-shadow: 0 18px 50px rgba(15,23,42,0.7);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: grey;
+    }
+
+    .status-pill.ok      { background: #022c22; color: #6ee7b7; }
+    .status-pill.ok .status-dot { background: #22c55e; }
+
+    .status-pill.warn    { background: #422006; color: #facc15; }
+    .status-pill.warn .status-dot { background: #facc15; }
+
+    .status-pill.alert   { background: #3f1111; color: #fca5a5; }
+    .status-pill.alert .status-dot { background: #ef4444; }
+
+    .status-title {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .status-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .cards-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .cards-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      padding: 12px 14px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 10px 25px rgba(15,23,42,0.7);
+    }
+
+    .card h3 {
+      margin: 0 0 4px 0;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .card-value {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .card-sub {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .graph-card {
+      height: 360px;
+    }
+
+    .alerts-card {
+      max-height: 440px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    thead {
+      position: sticky;
+      top: 0;
+      background: #020617;
+      z-index: 1;
+    }
+
+    th, td {
+      padding: 6px 6px;
+      text-align: left;
+      border-bottom: 1px solid rgba(31,41,55,0.7);
+    }
+
+    th {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    tbody tr:hover {
+      background: rgba(15,23,42,0.8);
+    }
+
+    .alert-kind {
+      font-weight: 500;
+      font-size: 12px;
+    }
+
+    .alert-kind.tag {
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.9);
+      display: inline-block;
+    }
+
+    .pill-danger {
+      border-color: rgba(239,68,68,0.7);
+      color: #fecaca;
+    }
+
+    .pill-info {
+      border-color: rgba(59,130,246,0.7);
+      color: #bfdbfe;
+    }
+
+    .pill-anom {
+      border-color: rgba(96,165,250,0.7);
+      color: #e0f2fe;
+    }
+
+    .timestamp {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .details-cell {
+      max-width: 260px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(107,114,128,0.7);
+      color: var(--text-muted);
+    }
+
+    .badge-critical {
+      border-color: rgba(239,68,68,0.7);
+      color: #fecaca;
+    }
+
+    .badge-high {
+      border-color: rgba(249,115,22,0.8);
+      color: #fed7aa;
+    }
+
+    .badge-normal {
+      border-color: rgba(52,211,153,0.8);
+      color: #bbf7d0;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-  <div class="max-w-7xl mx-auto p-6 space-y-6">
-    <header class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-3">
-      <div>
-        <h1 class="text-2xl font-semibold">Wireless IDS — Offline Dashboard</h1>
-        <p class="text-sm text-gray-600">
-          Metrics: <code class="bg-gray-100 px-1 rounded">{{ metrics_csv }}</code>
-          &nbsp; Alerts: <code class="bg-gray-100 px-1 rounded">{{ alerts_jsonl }}</code>
-        </p>
-      </div>
-      <div class="text-right">
-        <button id="refreshBtn" class="px-3 py-2 rounded-lg bg-blue-600 text-white text-sm">Refresh now</button>
-        <label class="ml-3 text-sm">
-          <input id="autorefresh" type="checkbox" class="align-middle" checked />
-          Auto-refresh (5s)
-        </label>
-        <!-- Y-scale mode selector -->
-        <select id="yScaleMode" class="ml-3 text-sm border rounded px-2 py-1">
-          <option value="auto">Y-scale: auto</option>
-          <option value="p95cap">Y-scale: cap @ P95</option>
-          <option value="log">Y-scale: log</option>
-          <option value="twoaxis">Y-scale: split axes</option>
-        </select>
-      </div>
-    </header>
+<body>
+  <div class="status-bar">
+    <div>
+      <div class="status-title">Wi-Fi Intrusion Detection</div>
+      <div class="status-sub" id="status-sub">Waiting for data…</div>
+    </div>
+    <div>
+      <span class="status-pill ok" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">Normal</span>
+      </span>
+      <span class="badge" id="ts-info">—</span>
+    </div>
+  </div>
 
-    <!-- Stat cards -->
-    <section id="stats" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-white shadow rounded-xl p-4">
-        <div class="text-xs text-gray-500">Windows</div>
-        <div id="statWindows" class="text-2xl font-semibold">—</div>
-      </div>
-      <div class="bg-white shadow rounded-xl p-4">
-        <div class="text-xs text-gray-500">Alerts</div>
-        <div id="statAlerts" class="text-2xl font-semibold">—</div>
-      </div>
-      <div class="bg-white shadow rounded-xl p-4">
-        <div class="text-xs text-gray-500">Last window (UTC)</div>
-        <div id="statLastTs" class="text-lg font-mono">—</div>
-      </div>
-      <div class="bg-white shadow rounded-xl p-4">
-        <div class="text-xs text-gray-500">Thresholds</div>
-        <div class="text-sm leading-5">
-          <div>Deauth ≤ <span class="font-semibold">{{ thresholds.deauth_per_sec }}</span></div>
-          <div>Probe ≤ <span class="font-semibold">{{ thresholds.probe_req_per_sec }}</span></div>
-          <div>Beacon ≤ <span class="font-semibold">{{ thresholds.beacon_per_sec }}</span></div>
+  <div class="layout">
+    <div>
+      <div class="cards-row">
+        <div class="card">
+          <h3>Deauth / s (window)</h3>
+          <div class="card-value" id="card-deauth">0</div>
+          <div class="card-sub" id="card-deauth-sub">Top sender: —</div>
+        </div>
+        <div class="card">
+          <h3>Probe Req / s (window)</h3>
+          <div class="card-value" id="card-probe">0</div>
+          <div class="card-sub">Global burst level</div>
+        </div>
+        <div class="card">
+          <h3>Beacons / s (window)</h3>
+          <div class="card-value" id="card-beacon">0</div>
+          <div class="card-sub" id="card-beacon-sub">Top channel: —</div>
         </div>
       </div>
-    </section>
 
-    <!-- Charts -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-white shadow rounded-xl p-4">
-        <div class="text-sm font-medium mb-2">Deauth / Probe / Beacon (per window)</div>
-        <canvas id="chartMain" height="180"></canvas>
+      <div class="card graph-card">
+        <h3>Traffic over time</h3>
+        <canvas id="trafficChart" style="width:100%; height:260px;"></canvas>
       </div>
-      <div class="bg-white shadow rounded-xl p-4">
-        <div class="text-sm font-medium mb-2">Evil-Twin signal (max distinct BSSIDs / SSID)</div>
-        <canvas id="chartEvil" height="180"></canvas>
-      </div>
-      <div class="bg-white shadow rounded-xl p-4">
-        <div class="text-sm font-medium mb-2">Top per-sender bursts (deauth / probe / beacon)</div>
-        <canvas id="chartTop" height="180"></canvas>
-      </div>
-      <div class="bg-white shadow rounded-xl p-4">
-        <div class="text-sm font-medium mb-2">Alerts timeline (by kind)</div>
-        <canvas id="chartAlerts" height="180"></canvas>
-      </div>
-    </section>
+    </div>
 
-    <!-- Alerts table -->
-    <section class="bg-white shadow rounded-xl p-4">
-      <div class="flex items-center justify-between mb-3">
-        <div class="text-sm font-medium">Recent Alerts</div>
-        <div class="space-x-2">
-          <select id="filterKind" class="text-sm border rounded px-2 py-1">
-            <option value="">All kinds</option>
-            <option value="DEAUTH">DEAUTH</option>
-            <option value="PROBE">PROBE</option>
-            <option value="BEACON">BEACON</option>
-            <option value="EVIL_TWIN">EVIL_TWIN</option>
-          </select>
-        </div>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-sm">
-          <thead>
-            <tr class="text-left text-gray-500">
-              <th class="py-2 pr-4">Time (UTC)</th>
-              <th class="py-2 pr-4">Kind</th>
-              <th class="py-2 pr-4">Details</th>
-            </tr>
-          </thead>
-          <tbody id="alertsBody" class="align-top"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <footer class="text-xs text-gray-500 text-center">
-      Auto-reads files on disk. Refresh cadence: 5s (configurable).
-    </footer>
+    <div class="card alerts-card">
+      <h3>Recent alerts</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Kind</th>
+            <th>Window</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody id="alerts-body">
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <script>
-    // -------- helpers for scale modes --------
-    function quantile(arr, q) {
-      const a = arr.filter(v => typeof v === 'number' && !isNaN(v))
-                   .slice().sort((x,y)=>x-y);
-      if (!a.length) return null;
-      const pos = (a.length - 1) * q;
-      const base = Math.floor(pos);
-      const rest = pos - base;
-      return a[base] + (a[base+1] !== undefined ? rest*(a[base+1]-a[base]) : 0);
-    }
-    function seriesValues(datasets) {
-      return datasets.flatMap(ds => ds.data.map(p => p?.y).filter(v => v != null));
-    }
+    const API_URL = "http://localhost:8000/api/state";
 
-    const chartOpts = {
-      animation: false,
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: { x: { type: 'time', time: { unit: 'second' }}, y: { beginAtZero: true } },
-      plugins: { legend: { position: 'bottom' } }
-    };
+    const MAX_POINTS = 60;
+    const labels = [];
+    const deauthData = [];
+    const probeData = [];
+    const beaconData = [];
 
-    let chartMain, chartEvil, chartTop, chartAlerts;
-
-    function makeCharts() {
-      const ctxMain = document.getElementById('chartMain').getContext('2d');
-      const ctxEvil = document.getElementById('chartEvil').getContext('2d');
-      const ctxTop  = document.getElementById('chartTop').getContext('2d');
-      const ctxAlrt = document.getElementById('chartAlerts').getContext('2d');
-
-      chartMain = new Chart(ctxMain, {
-        type: 'line',
-        data: { datasets: [
-          { label: 'Deauth', data: [], tension: 0.2 },
-          { label: 'Probe',  data: [], tension: 0.2 },
-          { label: 'Beacon', data: [], tension: 0.2 },
-        ]},
-        options: JSON.parse(JSON.stringify(chartOpts))
-      });
-
-      chartEvil = new Chart(ctxEvil, {
-        type: 'line',
-        data: { datasets: [
-          { label: 'Max distinct BSSIDs per SSID', data: [], tension: 0.2 }
-        ]},
-        options: JSON.parse(JSON.stringify(chartOpts))
-      });
-
-      chartTop = new Chart(ctxTop, {
-        type: 'line',
-        data: { datasets: [
-          { label: 'Top sender deauth', data: [], tension: 0.2 },
-          { label: 'Top sender probe',  data: [], tension: 0.2 },
-          { label: 'Top sender beacon', data: [], tension: 0.2 },
-        ]},
-        options: JSON.parse(JSON.stringify(chartOpts))
-      });
-
-      chartAlerts = new Chart(ctxAlrt, {
-        type: 'scatter',
-        data: { datasets: [{ label: 'Alerts', data: [] }] },
-        options: {
-          animation: false,
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: { x: { type: 'time', time: { unit: 'second' }}, y: { display: false } },
-          plugins: { legend: { display: false } }
-        }
-      });
-    }
-
-    function applyScaleMode() {
-      const mode = document.getElementById('yScaleMode').value;
-
-      // MAIN chart (Deauth/Probe/Beacon)
-      const main = chartMain;
-      const scales = main.options.scales;
-      scales.y = scales.y || { beginAtZero: true };
-      delete scales.y.max; delete scales.y.suggestedMax;
-      delete scales.y1;
-      for (const ds of main.data.datasets) ds.yAxisID = undefined;
-      scales.y.type = 'linear';
-
-      if (mode === 'log') {
-        scales.y.type = 'logarithmic';
-        for (const ds of main.data.datasets) {
-          ds.data = ds.data.map(p => (p && p.y > 0 ? p : { x: p.x, y: null }));
-        }
-      } else if (mode === 'p95cap') {
-        const p95 = quantile(seriesValues(main.data.datasets), 0.95);
-        if (p95) scales.y.max = Math.max(1, Math.ceil(p95));
-      } else if (mode === 'twoaxis') {
-        scales.y1 = { position: 'right', beginAtZero: true, grid: { drawOnChartArea: false } };
-        // datasets: 0=Deauth, 1=Probe, 2=Beacon
-        main.data.datasets[2].yAxisID = 'y1';
-        const leftP95  = quantile(seriesValues([main.data.datasets[0], main.data.datasets[1]]), 0.95);
-        const rightP95 = quantile(seriesValues([main.data.datasets[2]]), 0.95);
-        if (leftP95)  scales.y.max  = Math.max(1, Math.ceil(leftP95));
-        if (rightP95) scales.y1.max = Math.max(1, Math.ceil(rightP95));
-      }
-      main.update('none');
-
-      // EVIL + TOP charts
-      for (const chart of [chartEvil, chartTop]) {
-        const s = chart.options.scales;
-        s.y = s.y || { beginAtZero: true };
-        delete s.y.max; delete s.y.suggestedMax;
-        s.y.type = 'linear';
-        if (mode === 'log') {
-          s.y.type = 'logarithmic';
-          for (const ds of chart.data.datasets) {
-            ds.data = ds.data.map(p => (p && p.y > 0 ? p : { x: p.x, y: null }));
-          }
-        } else if (mode === 'p95cap' || mode === 'twoaxis') {
-          const p95 = quantile(seriesValues(chart.data.datasets), 0.95);
-          if (p95) s.y.max = Math.max(1, Math.ceil(p95));
-        }
-        chart.update('none');
-      }
-    }
-
-    async function loadSummary() {
-      const res = await fetch('/api/summary');
-      const j = await res.json();
-      document.getElementById('statWindows').textContent = j.windows ?? '—';
-      document.getElementById('statAlerts').textContent  = j.alerts ?? '—';
-      document.getElementById('statLastTs').textContent  = j.last_window_iso ?? '—';
-    }
-
-    async function loadMetrics() {
-      const res = await fetch('/api/metrics');
-      const m = await res.json();
-      chartMain.data.datasets[0].data = m.deauth;
-      chartMain.data.datasets[1].data = m.probe;
-      chartMain.data.datasets[2].data = m.beacon;
-      chartMain.update('none');
-
-      chartEvil.data.datasets[0].data = m.evmx; chartEvil.update('none');
-
-      chartTop.data.datasets[0].data = m.topd;
-      chartTop.data.datasets[1].data = m.topp;
-      chartTop.data.datasets[2].data = m.topb;
-      chartTop.update('none');
-
-      // Apply chosen y-scale after datasets are in place
-      await Promise.resolve();
-      applyScaleMode();
-    }
-
-    function renderAlertsTable(alerts) {
-      const body = document.getElementById('alertsBody');
-      body.innerHTML = '';
-      const items = alerts.slice().reverse();
-      for (const a of items.slice(0, 200)) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="py-2 pr-4 whitespace-nowrap font-mono">${a._ts_iso ?? '—'}</td>
-          <td class="py-2 pr-4"><span class="px-2 py-1 rounded bg-gray-100">${a.kind ?? '—'}</span></td>
-          <td class="py-2 pr-4"><pre class="text-xs bg-gray-50 p-2 rounded overflow-x-auto">${JSON.stringify(a.details || {}, null, 2)}</pre></td>
-        `;
-        body.appendChild(tr);
-      }
-    }
-
-    async function loadAlerts() {
-      const kind = document.getElementById('filterKind').value || '';
-      const url  = kind ? `/api/alerts?kind=${encodeURIComponent(kind)}` : '/api/alerts';
-      const res = await fetch(url);
-      const j = await res.json();
-      const pts = j.alerts.map((a, idx) => ({ x: (a._ts ? a._ts*1000 : null), y: idx }));
-      chartAlerts.data.datasets[0].data = pts;
-      chartAlerts.update('none');
-      renderAlertsTable(j.alerts);
-    }
-
-    async function refreshAll() {
-      await Promise.all([loadSummary(), loadMetrics(), loadAlerts()]);
-    }
-
-    // boot
-    makeCharts();
-    refreshAll();
-
-    document.getElementById('refreshBtn').addEventListener('click', refreshAll);
-    document.getElementById('filterKind').addEventListener('change', loadAlerts);
-    document.getElementById('yScaleMode').addEventListener('change', applyScaleMode);
-
-    // auto-refresh
-    let timer = setInterval(refreshAll, 5000);
-    document.getElementById('autorefresh').addEventListener('change', (e) => {
-      if (e.target.checked) {
-        timer = setInterval(refreshAll, 5000);
-      } else {
-        clearInterval(timer);
-      }
+    const ctx = document.getElementById("trafficChart").getContext("2d");
+    const trafficChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: "Deauth",
+            data: deauthData,
+            borderWidth: 2,
+            tension: 0.25,
+          },
+          {
+            label: "Probe",
+            data: probeData,
+            borderWidth: 2,
+            tension: 0.25,
+          },
+          {
+            label: "Beacon",
+            data: beaconData,
+            borderWidth: 2,
+            tension: 0.25,
+          },
+        ],
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              color: "#e5e7eb",
+            },
+          },
+        },
+        scales: {
+          x: {
+            ticks: { color: "#9ca3af", maxTicksLimit: 6 },
+            grid: { color: "rgba(31,41,55,0.5)" },
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { color: "#9ca3af" },
+            grid: { color: "rgba(31,41,55,0.5)" },
+          },
+        },
+      },
     });
+
+    function severityFromAlerts(alerts) {
+      if (!alerts || alerts.length === 0) return "normal";
+      let critical = false;
+      let warning = false;
+      const now = Date.now() / 1000;
+      for (const a of alerts) {
+        const kind = a.kind || "";
+        const age = now - (a.ts_to || a.ts_from || 0);
+        if (age > 30) continue; // only consider last 30s
+        if (kind.startsWith("THRESH_DEAUTH") || kind.includes("EVIL_TWIN")) {
+          critical = true;
+        } else if (kind.startsWith("ANOMALY_") || kind.includes("PROBE") || kind.includes("BEACON_SPIKE")) {
+          warning = true;
+        }
+      }
+      if (critical) return "critical";
+      if (warning) return "warning";
+      return "normal";
+    }
+
+    function updateStatus(sev, metrics) {
+      const pill = document.getElementById("status-pill");
+      const text = document.getElementById("status-text");
+      const sub = document.getElementById("status-sub");
+
+      pill.classList.remove("ok", "warn", "alert");
+
+      if (sev === "critical") {
+        pill.classList.add("alert");
+        text.textContent = "Intrusion suspected";
+        sub.textContent = metrics
+          ? "Deauth / evil-twin pattern detected"
+          : "Waiting for metrics…";
+      } else if (sev === "warning") {
+        pill.classList.add("warn");
+        text.textContent = "Anomalous activity";
+        sub.textContent = metrics
+          ? "Probe / beacon anomalies in recent windows"
+          : "Waiting for metrics…";
+      } else {
+        pill.classList.add("ok");
+        text.textContent = "Normal";
+        sub.textContent = metrics
+          ? "No recent threshold / anomaly alerts"
+          : "Waiting for metrics…";
+      }
+    }
+
+    function formatTs(ts) {
+      if (!ts) return "—";
+      const d = new Date(ts * 1000);
+      return d.toLocaleTimeString();
+    }
+
+    function updateCards(metrics) {
+      const d = metrics ? metrics.deauth : 0;
+      const p = metrics ? metrics.probe : 0;
+      const b = metrics ? metrics.beacon : 0;
+
+      document.getElementById("card-deauth").textContent = d;
+      document.getElementById("card-probe").textContent = p;
+      document.getElementById("card-beacon").textContent = b;
+
+      const subDeauth = document.getElementById("card-deauth-sub");
+      subDeauth.textContent = metrics
+        ? `Top sender burst: ${metrics.top_sender_deauth || 0}`
+        : "Top sender: —";
+
+      const subBeacon = document.getElementById("card-beacon-sub");
+      subBeacon.textContent = metrics
+        ? `Top channel: ${metrics.top_channel ?? "—"} (beacon ${metrics.top_channel_beacon_count || 0})`
+        : "Top channel: —";
+    }
+
+    function updateChart(tsLabel, metrics) {
+      labels.push(tsLabel);
+      deauthData.push(metrics ? metrics.deauth : 0);
+      probeData.push(metrics ? metrics.probe : 0);
+      beaconData.push(metrics ? metrics.beacon : 0);
+
+      if (labels.length > MAX_POINTS) {
+        labels.shift();
+        deauthData.shift();
+        probeData.shift();
+        beaconData.shift();
+      }
+      trafficChart.update();
+    }
+
+    function classifyKind(kind) {
+      if (!kind) return "info";
+      if (kind.startsWith("THRESH_DEAUTH") || kind.includes("EVIL_TWIN")) return "danger";
+      if (kind.startsWith("ANOMALY_")) return "anom";
+      return "info";
+    }
+
+    function updateAlertsTable(alerts) {
+      const tbody = document.getElementById("alerts-body");
+      tbody.innerHTML = "";
+
+      if (!alerts || alerts.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 3;
+        td.textContent = "No alerts yet.";
+        td.style.color = "#6b7280";
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
+      }
+
+      const recent = alerts.slice(-20).reverse();
+
+      for (const a of recent) {
+        const tr = document.createElement("tr");
+
+        const tdKind = document.createElement("td");
+        const spanKind = document.createElement("span");
+        spanKind.classList.add("alert-kind", "tag");
+        const c = classifyKind(a.kind);
+        if (c === "danger") spanKind.classList.add("pill-danger");
+        else if (c === "anom") spanKind.classList.add("pill-anom");
+        else spanKind.classList.add("pill-info");
+        spanKind.textContent = a.kind || "UNKNOWN";
+        tdKind.appendChild(spanKind);
+
+        const tdWindow = document.createElement("td");
+        const tsFrom = a.ts_from || a.tsTo || 0;
+        const tsTo = a.ts_to || a.ts_from || 0;
+        const spanWin = document.createElement("div");
+        spanWin.classList.add("timestamp");
+        spanWin.textContent = `${formatTs(tsFrom)} – ${formatTs(tsTo)}`;
+        tdWindow.appendChild(spanWin);
+
+        const tdDetails = document.createElement("td");
+        tdDetails.classList.add("details-cell");
+        const details = a.details || {};
+        tdDetails.textContent = JSON.stringify(details);
+        tr.appendChild(tdKind);
+        tr.appendChild(tdWindow);
+        tr.appendChild(tdDetails);
+
+        tbody.appendChild(tr);
+      }
+    }
+
+    async function poll() {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        if (!data.ok) {
+          updateStatus("normal", null);
+          document.getElementById("ts-info").textContent = "No data";
+          return;
+        }
+
+        const metrics = data.metrics;
+        const alerts = data.alerts || [];
+        const now = data.now || (Date.now() / 1000);
+
+        document.getElementById("ts-info").textContent =
+          metrics ? `Window ending: ${formatTs(metrics.ts_to)}` : "No windows yet";
+
+        const sev = severityFromAlerts(alerts);
+        updateStatus(sev, metrics);
+        updateCards(metrics);
+
+        if (metrics) {
+          const label = new Date(metrics.ts_to * 1000).toLocaleTimeString();
+          updateChart(label, metrics);
+        }
+
+        updateAlertsTable(alerts);
+      } catch (e) {
+        console.error("poll error", e);
+        updateStatus("normal", null);
+        document.getElementById("ts-info").textContent = "Disconnected";
+      }
+    }
+
+    // Poll every second
+    poll();
+    setInterval(poll, 1000);
   </script>
 </body>
 </html>
