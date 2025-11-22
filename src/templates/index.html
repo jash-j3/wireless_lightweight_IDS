@@ -2,303 +2,379 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Wi-Fi IDS Dashboard</title>
+  <title>Network Guardian | IDS Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Chart.js -->
-  <script src="chart.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     :root {
-      --bg-dark: #050816;
-      --bg-card: #0f172a;
-      --accent: #3b82f6;
-      --accent-soft: rgba(59,130,246,0.2);
-      --accent-danger: #ef4444;
-      --accent-warning: #eab308;
-      --text-main: #e5e7eb;
-      --text-muted: #9ca3af;
-      --border-subtle: #1f2937;
-      --radius-xl: 18px;
+      /* Light Theme Variables */
+      --bg-app: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      
+      --border-subtle: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+      --color-success: #10b981;
+      --color-success-bg: #ecfdf5;
+      --color-warning: #f59e0b;
+      --color-warning-bg: #fffbeb;
+      --color-danger: #ef4444;
+      --color-danger-bg: #fef2f2;
+      --color-primary: #3b82f6;
+
+      --radius: 12px;
+      --font-main: 'Inter', sans-serif;
+    }
+
+    /* CRITICAL STATE OVERRIDES (Activated via JS) */
+    body.state-critical {
+      --bg-app: #fef2f2; /* Light Red Background */
+      --border-subtle: #fca5a5;
+    }
+
+    body.state-critical .status-bar {
+      background: #ef4444;
+      color: white;
+      border-color: #b91c1c;
+      animation: pulse-border 2s infinite;
+    }
+    
+    body.state-critical .status-bar .status-sub {
+      color: rgba(255,255,255,0.9);
+    }
+
+    body.state-critical .status-pill {
+      background: white;
+      color: #ef4444;
+    }
+
+    body.state-critical .card {
+      border-color: #fecaca;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+    }
+
+    @keyframes pulse-border {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
     }
 
     * {
       box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
       margin: 0;
-      padding: 16px;
-      background: radial-gradient(circle at top, #1f2933, #020617);
+      padding: 24px;
+      background-color: var(--bg-app);
       color: var(--text-main);
+      font-family: var(--font-main);
+      transition: background-color 0.5s ease;
     }
 
     .layout {
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: 2fr 1.4fr;
-      grid-gap: 16px;
+      display: flex;
+      flex-direction: column; /* Stack elements vertically */
+      gap: 24px;
     }
 
-    @media (max-width: 900px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
+    /* --- Header / Status Bar --- */
     .status-bar {
-      margin-bottom: 16px;
-      padding: 14px 18px;
-      border-radius: var(--radius-xl);
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-md);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(90deg, rgba(15,23,42,0.95), rgba(15,23,42,0.7));
-      box-shadow: 0 18px 50px rgba(15,23,42,0.7);
+      transition: all 0.3s ease;
+    }
+
+    .status-content h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .status-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .status-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
     }
 
     .status-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 4px 10px;
+      padding: 6px 12px;
       border-radius: 999px;
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
     }
 
     .status-dot {
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: grey;
+      background: currentColor;
     }
 
-    .status-pill.ok      { background: #022c22; color: #6ee7b7; }
-    .status-pill.ok .status-dot { background: #22c55e; }
+    /* Default Pill States (Non-Critical Mode) */
+    .pill-normal { background: var(--color-success-bg); color: var(--color-success); border: 1px solid #d1fae5; }
+    .pill-warn   { background: var(--color-warning-bg); color: var(--color-warning); border: 1px solid #fef3c7; }
+    .pill-alert  { background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid #fee2e2; }
 
-    .status-pill.warn    { background: #422006; color: #facc15; }
-    .status-pill.warn .status-dot { background: #facc15; }
-
-    .status-pill.alert   { background: #3f1111; color: #fca5a5; }
-    .status-pill.alert .status-dot { background: #ef4444; }
-
-    .status-title {
-      font-weight: 600;
-      font-size: 15px;
-    }
-
-    .status-sub {
-      font-size: 13px;
+    .refresh-badge {
+      font-size: 12px;
       color: var(--text-muted);
+      font-weight: 500;
     }
 
+    /* --- Cards --- */
     .cards-row {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-gap: 12px;
-      margin-bottom: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
     }
 
-    @media (max-width: 900px) {
-      .cards-row {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width: 768px) {
+      .cards-row { grid-template-columns: 1fr; }
     }
 
     .card {
       background: var(--bg-card);
-      border-radius: var(--radius-xl);
-      padding: 12px 14px;
+      border-radius: var(--radius);
+      padding: 20px;
       border: 1px solid var(--border-subtle);
-      box-shadow: 0 10px 25px rgba(15,23,42,0.7);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .card h3 {
-      margin: 0 0 4px 0;
-      font-size: 13px;
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: #cbd5e1;
+    }
+
+    .card-label {
+      font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
     }
 
     .card-value {
-      font-size: 22px;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .card-meta {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* --- Graph --- */
+    .graph-card {
+      height: 400px;
+      padding-bottom: 40px; /* space for legend */
+    }
+
+    /* --- Alerts Table --- */
+    .alerts-card {
+      height: 500px; /* Fixed height for scrolling */
+      display: flex;
+      flex-direction: column;
+      padding: 0; /* Reset padding for full-width table */
+      overflow: hidden;
+    }
+
+    .alerts-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: #fff;
+    }
+
+    .alerts-header h3 {
+      margin: 0;
+      font-size: 16px;
       font-weight: 600;
     }
 
-    .card-sub {
-      margin-top: 3px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .graph-card {
-      height: 360px;
-    }
-
-    .alerts-card {
-      max-height: 440px;
+    .table-container {
       overflow-y: auto;
+      flex: 1;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
+      font-size: 13px;
     }
 
     thead {
+      background: #f8fafc;
       position: sticky;
       top: 0;
-      background: #020617;
-      z-index: 1;
-    }
-
-    th, td {
-      padding: 6px 6px;
-      text-align: left;
-      border-bottom: 1px solid rgba(31,41,55,0.7);
+      z-index: 10;
     }
 
     th {
+      text-align: left;
+      padding: 12px 20px;
       font-size: 11px;
-      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-subtle);
     }
 
-    tbody tr:hover {
-      background: rgba(15,23,42,0.8);
+    td {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      vertical-align: middle;
     }
 
-    .alert-kind {
-      font-weight: 500;
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background-color: #f1f5f9; }
+
+    /* Alert Tags */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+    }
+    
+    .tag-danger { background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid #fee2e2; }
+    .tag-anom   { background: #eff6ff; color: #3b82f6; border: 1px solid #dbeafe; }
+    .tag-info   { background: #f3f4f6; color: #64748b; border: 1px solid #e2e8f0; }
+
+    .time-col {
+      color: var(--text-secondary);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      width: 150px;
+    }
+    
+    .source-col {
+      font-family: monospace;
+      color: var(--text-main);
       font-size: 12px;
     }
 
-    .alert-kind.tag {
-      padding: 2px 6px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.4);
-      background: rgba(15,23,42,0.9);
-      display: inline-block;
-    }
-
-    .pill-danger {
-      border-color: rgba(239,68,68,0.7);
-      color: #fecaca;
-    }
-
-    .pill-info {
-      border-color: rgba(59,130,246,0.7);
-      color: #bfdbfe;
-    }
-
-    .pill-anom {
-      border-color: rgba(96,165,250,0.7);
-      color: #e0f2fe;
-    }
-
-    .timestamp {
-      font-size: 11px;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .details-cell {
-      max-width: 260px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: var(--text-muted);
-    }
-
-    .badge {
-      padding: 2px 6px;
-      border-radius: 999px;
-      font-size: 11px;
-      border: 1px solid rgba(107,114,128,0.7);
-      color: var(--text-muted);
-    }
-
-    .badge-critical {
-      border-color: rgba(239,68,68,0.7);
-      color: #fecaca;
-    }
-
-    .badge-high {
-      border-color: rgba(249,115,22,0.8);
-      color: #fed7aa;
-    }
-
-    .badge-normal {
-      border-color: rgba(52,211,153,0.8);
-      color: #bbf7d0;
+    .metric-col {
+        color: var(--text-secondary);
     }
   </style>
 </head>
 <body>
-  <div class="status-bar">
-    <div>
-      <div class="status-title">Wi-Fi Intrusion Detection</div>
-      <div class="status-sub" id="status-sub">Waiting for data…</div>
-    </div>
-    <div>
-      <span class="status-pill ok" id="status-pill">
-        <span class="status-dot"></span>
-        <span id="status-text">Normal</span>
-      </span>
-      <span class="badge" id="ts-info">—</span>
-    </div>
-  </div>
 
   <div class="layout">
-    <div>
-      <div class="cards-row">
-        <div class="card">
-          <h3>Deauth / s (window)</h3>
-          <div class="card-value" id="card-deauth">0</div>
-          <div class="card-sub" id="card-deauth-sub">Top sender: —</div>
-        </div>
-        <div class="card">
-          <h3>Probe Req / s (window)</h3>
-          <div class="card-value" id="card-probe">0</div>
-          <div class="card-sub">Global burst level</div>
-        </div>
-        <div class="card">
-          <h3>Beacons / s (window)</h3>
-          <div class="card-value" id="card-beacon">0</div>
-          <div class="card-sub" id="card-beacon-sub">Top channel: —</div>
-        </div>
+    
+    <div class="status-bar" id="status-container">
+      <div class="status-content">
+        <h1>Wi-Fi Perimeter Monitor</h1>
+        <div class="status-sub" id="status-sub">System initializing...</div>
       </div>
+      <div class="status-indicator">
+        <div class="status-pill pill-normal" id="status-pill">
+          <div class="status-dot"></div>
+          <span id="status-text">System Secure</span>
+        </div>
+        <div class="refresh-badge" id="ts-info">Connecting...</div>
+      </div>
+    </div>
 
-      <div class="card graph-card">
-        <h3>Traffic over time</h3>
-        <canvas id="trafficChart" style="width:100%; height:260px;"></canvas>
+    <div class="cards-row">
+      <div class="card">
+        <div class="card-label">Deauth Packets / s</div>
+        <div class="card-value" id="card-deauth">0</div>
+        <div class="card-meta" id="card-deauth-sub">No activity</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Probe Requests / s</div>
+        <div class="card-value" id="card-probe">0</div>
+        <div class="card-meta">Global burst rate</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Beacons / s</div>
+        <div class="card-value" id="card-beacon">0</div>
+        <div class="card-meta" id="card-beacon-sub">Scanning channels...</div>
+      </div>
+    </div>
+
+    <div class="card graph-card">
+      <div class="card-label" style="margin-bottom: 16px;">Traffic Analysis (Real-time)</div>
+      <div style="position: relative; height: 100%; width: 100%;">
+        <canvas id="trafficChart"></canvas>
       </div>
     </div>
 
     <div class="card alerts-card">
-      <h3>Recent alerts</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Kind</th>
-            <th>Window</th>
-            <th>Details</th>
-          </tr>
-        </thead>
-        <tbody id="alerts-body">
-          <!-- Filled dynamically -->
-        </tbody>
-      </table>
+      <div class="alerts-header">
+        <h3>Security Events Log</h3>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Severity / Type</th>
+              <th>Timestamp</th>
+              <th>Target / Source</th>
+              <th>Metrics & Thresholds</th>
+            </tr>
+          </thead>
+          <tbody id="alerts-body">
+            <tr><td colspan="4" style="text-align:center; padding: 30px; color: var(--text-muted);">Waiting for events...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
   </div>
 
   <script>
     const API_URL = "http://localhost:8000/api/state";
+
+    // --- Persistence Logic Constants ---
+    const SUSTAIN_ALERT_MS = 5000; // 5 Seconds
+    let alertExpiryTime = 0; 
+    let currentVisualState = 'normal';
 
     const MAX_POINTS = 60;
     const labels = [];
@@ -306,6 +382,10 @@
     const probeData = [];
     const beaconData = [];
 
+    // --- Chart.js Setup (Clean Theme) ---
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#64748b';
+    
     const ctx = document.getElementById("trafficChart").getContext("2d");
     const trafficChart = new Chart(ctx, {
       type: "line",
@@ -313,99 +393,144 @@
         labels,
         datasets: [
           {
-            label: "Deauth",
+            label: "Deauth Attack",
             data: deauthData,
+            borderColor: "#ef4444", // Red
+            backgroundColor: "rgba(239, 68, 68, 0.1)",
             borderWidth: 2,
-            tension: 0.25,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 0,
+            pointHoverRadius: 4
           },
           {
-            label: "Probe",
+            label: "Probe Request",
             data: probeData,
+            borderColor: "#3b82f6", // Blue
             borderWidth: 2,
-            tension: 0.25,
+            tension: 0.3,
+            pointRadius: 0
           },
           {
-            label: "Beacon",
+            label: "Beacon Frame",
             data: beaconData,
+            borderColor: "#10b981", // Green
             borderWidth: 2,
-            tension: 0.25,
+            tension: 0.3,
+            pointRadius: 0
           },
         ],
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+            mode: 'index',
+            intersect: false,
+        },
         plugins: {
           legend: {
-            labels: {
-              color: "#e5e7eb",
-            },
+            position: 'top',
+            align: 'end',
+            labels: { usePointStyle: true, boxWidth: 8, padding: 20 }
           },
+          tooltip: {
+            backgroundColor: '#1e293b',
+            padding: 12,
+            cornerRadius: 8,
+            titleFont: { weight: '600' }
+          }
         },
         scales: {
           x: {
-            ticks: { color: "#9ca3af", maxTicksLimit: 6 },
-            grid: { color: "rgba(31,41,55,0.5)" },
+            grid: { display: false, drawBorder: false },
+            ticks: { maxTicksLimit: 6, maxRotation: 0 }
           },
           y: {
             beginAtZero: true,
-            ticks: { color: "#9ca3af" },
-            grid: { color: "rgba(31,41,55,0.5)" },
+            border: { display: false },
+            grid: { color: '#f1f5f9', borderDash: [5, 5] }
           },
         },
       },
     });
 
-    function severityFromAlerts(alerts) {
+    // --- Application Logic ---
+
+    function determineSeverity(alerts) {
       if (!alerts || alerts.length === 0) return "normal";
+      
+      const now = Date.now() / 1000;
       let critical = false;
       let warning = false;
-      const now = Date.now() / 1000;
+
       for (const a of alerts) {
         const kind = a.kind || "";
-        const age = now - (a.ts_to || a.ts_from || 0);
-        if (age > 30) continue; // only consider last 30s
+        // Only care about alerts from the last 15 seconds
+        const ts = a.ts_to || a.ts_from || 0;
+        if ((now - ts) > 15) continue; 
+
         if (kind.startsWith("THRESH_DEAUTH") || kind.includes("EVIL_TWIN")) {
           critical = true;
         } else if (kind.startsWith("ANOMALY_") || kind.includes("PROBE") || kind.includes("BEACON_SPIKE")) {
           warning = true;
         }
       }
+
       if (critical) return "critical";
       if (warning) return "warning";
       return "normal";
     }
 
-    function updateStatus(sev, metrics) {
+    function updateVisualState(calculatedSeverity, metrics) {
+      const now = Date.now();
+
+      // 1. Alert Logic: Update sustain timer
+      if (calculatedSeverity === 'critical') {
+        alertExpiryTime = now + SUSTAIN_ALERT_MS;
+      }
+
+      // 2. Determine Display State (check timer)
+      let displaySeverity = calculatedSeverity;
+      
+      // If we are in a "cooling down" period from a critical alert, force critical display
+      if (now < alertExpiryTime) {
+        displaySeverity = 'critical';
+      }
+
+      // 3. Apply to DOM
+      const body = document.body;
       const pill = document.getElementById("status-pill");
       const text = document.getElementById("status-text");
       const sub = document.getElementById("status-sub");
 
-      pill.classList.remove("ok", "warn", "alert");
+      // Reset Classes
+      body.classList.remove('state-critical');
+      pill.className = "status-pill"; // clear modifiers
 
-      if (sev === "critical") {
-        pill.classList.add("alert");
-        text.textContent = "Intrusion suspected";
-        sub.textContent = metrics
-          ? "Deauth / evil-twin pattern detected"
-          : "Waiting for metrics…";
-      } else if (sev === "warning") {
-        pill.classList.add("warn");
-        text.textContent = "Anomalous activity";
-        sub.textContent = metrics
-          ? "Probe / beacon anomalies in recent windows"
-          : "Waiting for metrics…";
+      if (displaySeverity === "critical") {
+        // -- CRITICAL UI --
+        body.classList.add('state-critical'); // Triggers red theme
+        pill.classList.add("pill-alert"); 
+        text.textContent = "INTRUSION DETECTED";
+        sub.textContent = "Active Deauthentication or Evil Twin signature matching.";
+      } else if (displaySeverity === "warning") {
+        // -- WARNING UI --
+        pill.classList.add("pill-warn");
+        text.textContent = "Anomalous Traffic";
+        sub.textContent = "Elevated probe requests or beacon spikes detected.";
       } else {
-        pill.classList.add("ok");
-        text.textContent = "Normal";
-        sub.textContent = metrics
-          ? "No recent threshold / anomaly alerts"
-          : "Waiting for metrics…";
+        // -- NORMAL UI --
+        pill.classList.add("pill-normal");
+        text.textContent = "System Secure";
+        sub.textContent = "Monitoring wireless spectrum. No threats found.";
       }
     }
 
     function formatTs(ts) {
       if (!ts) return "—";
       const d = new Date(ts * 1000);
-      return d.toLocaleTimeString();
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
     function updateCards(metrics) {
@@ -413,22 +538,23 @@
       const p = metrics ? metrics.probe : 0;
       const b = metrics ? metrics.beacon : 0;
 
-      document.getElementById("card-deauth").textContent = d;
-      document.getElementById("card-probe").textContent = p;
-      document.getElementById("card-beacon").textContent = b;
+      document.getElementById("card-deauth").textContent = d.toLocaleString();
+      document.getElementById("card-probe").textContent = p.toLocaleString();
+      document.getElementById("card-beacon").textContent = b.toLocaleString();
 
+      // Subtitles
       const subDeauth = document.getElementById("card-deauth-sub");
-      subDeauth.textContent = metrics
-        ? `Top sender burst: ${metrics.top_sender_deauth || 0}`
-        : "Top sender: —";
+      subDeauth.innerHTML = (metrics && metrics.top_sender_deauth > 0)
+        ? `<span style="color:var(--color-danger)">▲ ${metrics.top_sender_deauth} burst</span>`
+        : "Stable";
 
       const subBeacon = document.getElementById("card-beacon-sub");
       subBeacon.textContent = metrics
-        ? `Top channel: ${metrics.top_channel ?? "—"} (beacon ${metrics.top_channel_beacon_count || 0})`
-        : "Top channel: —";
+        ? `Ch ${metrics.top_channel ?? "—"} active (${metrics.top_channel_beacon_count || 0})`
+        : "Scanning...";
     }
 
-    function updateChart(tsLabel, metrics) {
+    function updateChartData(tsLabel, metrics) {
       labels.push(tsLabel);
       deauthData.push(metrics ? metrics.deauth : 0);
       probeData.push(metrics ? metrics.probe : 0);
@@ -440,62 +566,82 @@
         probeData.shift();
         beaconData.shift();
       }
-      trafficChart.update();
-    }
-
-    function classifyKind(kind) {
-      if (!kind) return "info";
-      if (kind.startsWith("THRESH_DEAUTH") || kind.includes("EVIL_TWIN")) return "danger";
-      if (kind.startsWith("ANOMALY_")) return "anom";
-      return "info";
+      trafficChart.update('none');
     }
 
     function updateAlertsTable(alerts) {
       const tbody = document.getElementById("alerts-body");
-      tbody.innerHTML = "";
-
+      
       if (!alerts || alerts.length === 0) {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.colSpan = 3;
-        td.textContent = "No alerts yet.";
-        td.style.color = "#6b7280";
-        tr.appendChild(td);
-        tbody.appendChild(tr);
+        if(tbody.childElementCount === 0) {
+           tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 30px; color: var(--text-muted);">No recent security events.</td></tr>`;
+        }
         return;
       }
 
-      const recent = alerts.slice(-20).reverse();
+      // Rebuild table
+      tbody.innerHTML = "";
+      const recent = alerts.slice(-30).reverse();
 
       for (const a of recent) {
         const tr = document.createElement("tr");
-
+        const details = a.details || {};
+        
+        // 1. Severity / Type Column
         const tdKind = document.createElement("td");
         const spanKind = document.createElement("span");
-        spanKind.classList.add("alert-kind", "tag");
-        const c = classifyKind(a.kind);
-        if (c === "danger") spanKind.classList.add("pill-danger");
-        else if (c === "anom") spanKind.classList.add("pill-anom");
-        else spanKind.classList.add("pill-info");
-        spanKind.textContent = a.kind || "UNKNOWN";
+        spanKind.classList.add("tag");
+        const kind = a.kind || "UNKNOWN";
+        
+        if (kind.startsWith("THRESH_DEAUTH") || kind.includes("EVIL_TWIN")) {
+            spanKind.classList.add("tag-danger");
+            spanKind.innerHTML = `⚠️ ${kind.replace("THRESH_", "").replace("ANOMALY_", "")}`;
+        } else if (kind.startsWith("ANOMALY_")) {
+            spanKind.classList.add("tag-anom");
+            spanKind.textContent = kind.replace("ANOMALY_", "");
+        } else {
+            spanKind.classList.add("tag-info");
+            spanKind.textContent = kind;
+        }
         tdKind.appendChild(spanKind);
 
-        const tdWindow = document.createElement("td");
-        const tsFrom = a.ts_from || a.tsTo || 0;
+        // 2. Timestamp Column
+        const tdTime = document.createElement("td");
+        tdTime.className = "time-col";
         const tsTo = a.ts_to || a.ts_from || 0;
-        const spanWin = document.createElement("div");
-        spanWin.classList.add("timestamp");
-        spanWin.textContent = `${formatTs(tsFrom)} – ${formatTs(tsTo)}`;
-        tdWindow.appendChild(spanWin);
+        tdTime.textContent = formatTs(tsTo);
 
-        const tdDetails = document.createElement("td");
-        tdDetails.classList.add("details-cell");
-        const details = a.details || {};
-        tdDetails.textContent = JSON.stringify(details);
+        // 3. Target / Source Column
+        const tdSource = document.createElement("td");
+        tdSource.className = "source-col";
+        
+        if (details.sender_mac) {
+            tdSource.innerHTML = `<span style="color:var(--text-muted)">Sender:</span> ${details.sender_mac}`;
+        } else if (details.bssid) {
+            tdSource.innerHTML = `<span style="color:var(--text-muted)">BSSID:</span> ${details.bssid}`;
+        } else {
+            tdSource.textContent = "—";
+        }
+
+        // 4. Metrics & Thresholds Column
+        const tdMetrics = document.createElement("td");
+        tdMetrics.className = "metric-col";
+        
+        let metricText = "";
+        if (details.count_in_window !== undefined) {
+            metricText = `<strong>${details.count_in_window}</strong> pkts (Limit: ${details.threshold})`;
+        } else if (details.z !== undefined) {
+            metricText = `<strong>Z: ${details.z.toFixed(2)}</strong> (Limit: ${details.z_threshold})`;
+        } else if (details.count !== undefined) {
+             metricText = `Count: ${details.count}`;
+        }
+
+        tdMetrics.innerHTML = metricText;
+
         tr.appendChild(tdKind);
-        tr.appendChild(tdWindow);
-        tr.appendChild(tdDetails);
-
+        tr.appendChild(tdTime);
+        tr.appendChild(tdSource);
+        tr.appendChild(tdMetrics);
         tbody.appendChild(tr);
       }
     }
@@ -504,37 +650,47 @@
       try {
         const res = await fetch(API_URL);
         const data = await res.json();
+        
         if (!data.ok) {
-          updateStatus("normal", null);
-          document.getElementById("ts-info").textContent = "No data";
+          document.getElementById("ts-info").textContent = "API Idle";
           return;
         }
 
         const metrics = data.metrics;
         const alerts = data.alerts || [];
-        const now = data.now || (Date.now() / 1000);
 
-        document.getElementById("ts-info").textContent =
-          metrics ? `Window ending: ${formatTs(metrics.ts_to)}` : "No windows yet";
+        // Update Header Timestamp
+        document.getElementById("ts-info").textContent = 
+          metrics ? `Last updated: ${formatTs(metrics.ts_to)}` : "Live";
 
-        const sev = severityFromAlerts(alerts);
-        updateStatus(sev, metrics);
+        // 1. Severity & Visual State
+        const severity = determineSeverity(alerts);
+        updateVisualState(severity, metrics);
+
+        // 2. Metrics Cards
         updateCards(metrics);
 
+        // 3. Chart
         if (metrics) {
-          const label = new Date(metrics.ts_to * 1000).toLocaleTimeString();
-          updateChart(label, metrics);
+          const label = new Date(metrics.ts_to * 1000).toLocaleTimeString([],{minute:'2-digit', second:'2-digit'});
+          updateChartData(label, metrics);
         }
 
+        // 4. Table
         updateAlertsTable(alerts);
+
       } catch (e) {
         console.error("poll error", e);
-        updateStatus("normal", null);
-        document.getElementById("ts-info").textContent = "Disconnected";
+        document.getElementById("ts-info").textContent = "Connection Lost";
+        document.getElementById("status-sub").textContent = "Cannot reach IDS server.";
+        document.getElementById("status-pill").classList.remove("pill-alert", "pill-warn", "pill-normal");
+        document.getElementById("status-pill").style.background = "#e2e8f0";
+        document.getElementById("status-pill").style.color = "#64748b";
+        document.getElementById("status-text").textContent = "Offline";
       }
     }
 
-    // Poll every second
+    // Start
     poll();
     setInterval(poll, 1000);
   </script>
