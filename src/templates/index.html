@@ -87,7 +87,7 @@
       max-width: 1280px;
       margin: 0 auto;
       display: flex;
-      flex-direction: column; /* Stack elements vertically */
+      flex-direction: column;
       gap: 24px;
     }
 
@@ -153,6 +153,49 @@
       font-weight: 500;
     }
 
+    /* --- Mode Toggle --- */
+    .mode-toggle-container {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .mode-toggle {
+      display: inline-flex;
+      padding: 2px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      border: 1px solid #cbd5e1;
+    }
+
+    .mode-btn {
+      border: none;
+      background: transparent;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: #475569;
+      transition: all 0.15s ease;
+    }
+
+    .mode-btn.active {
+      background: #0f172a;
+      color: #f9fafb;
+    }
+
+    .mode-btn:hover:not(.active) {
+      background: rgba(15, 23, 42, 0.05);
+    }
+
+    .mode-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
     /* --- Cards --- */
     .cards-row {
       display: grid;
@@ -206,15 +249,15 @@
     /* --- Graph --- */
     .graph-card {
       height: 400px;
-      padding-bottom: 40px; /* space for legend */
+      padding-bottom: 40px;
     }
 
     /* --- Alerts Table --- */
     .alerts-card {
-      height: 500px; /* Fixed height for scrolling */
+      height: 500px;
       display: flex;
       flex-direction: column;
-      padding: 0; /* Reset padding for full-width table */
+      padding: 0;
       overflow: hidden;
     }
 
@@ -269,7 +312,6 @@
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background-color: #f1f5f9; }
 
-    /* Alert Tags */
     .tag {
       display: inline-flex;
       align-items: center;
@@ -317,6 +359,15 @@
           <span id="status-text">System Secure</span>
         </div>
         <div class="refresh-badge" id="ts-info">Connecting...</div>
+
+        <!-- Mode toggle + learning info -->
+        <div class="mode-toggle-container">
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="mode-detection">Detection</button>
+            <button class="mode-btn" id="mode-learning">Learning</button>
+          </div>
+          <div class="mode-meta" id="mode-meta">Mode: Detection · baselines frozen</div>
+        </div>
       </div>
     </div>
 
@@ -370,11 +421,12 @@
 
   <script>
     const API_URL = "http://localhost:8000/api/state";
+    const MODE_URL = "http://localhost:8000/api/mode";
 
-    // --- Persistence Logic Constants ---
-    const SUSTAIN_ALERT_MS = 5000; // 5 Seconds
+    const SUSTAIN_ALERT_MS = 5000;
     let alertExpiryTime = 0; 
     let currentVisualState = 'normal';
+    let currentMode = 'detection';
 
     const MAX_POINTS = 60;
     const labels = [];
@@ -382,7 +434,6 @@
     const probeData = [];
     const beaconData = [];
 
-    // --- Chart.js Setup (Clean Theme) ---
     Chart.defaults.font.family = "'Inter', sans-serif";
     Chart.defaults.color = '#64748b';
     
@@ -395,7 +446,7 @@
           {
             label: "Deauth Attack",
             data: deauthData,
-            borderColor: "#ef4444", // Red
+            borderColor: "#ef4444",
             backgroundColor: "rgba(239, 68, 68, 0.1)",
             borderWidth: 2,
             fill: true,
@@ -406,7 +457,7 @@
           {
             label: "Probe Request",
             data: probeData,
-            borderColor: "#3b82f6", // Blue
+            borderColor: "#3b82f6",
             borderWidth: 2,
             tension: 0.3,
             pointRadius: 0
@@ -414,7 +465,7 @@
           {
             label: "Beacon Frame",
             data: beaconData,
-            borderColor: "#10b981", // Green
+            borderColor: "#10b981",
             borderWidth: 2,
             tension: 0.3,
             pointRadius: 0
@@ -455,8 +506,6 @@
       },
     });
 
-    // --- Application Logic ---
-
     function determineSeverity(alerts) {
       if (!alerts || alerts.length === 0) return "normal";
       
@@ -466,7 +515,6 @@
 
       for (const a of alerts) {
         const kind = a.kind || "";
-        // Only care about alerts from the last 15 seconds
         const ts = a.ts_to || a.ts_from || 0;
         if ((now - ts) > 15) continue; 
 
@@ -485,45 +533,36 @@
     function updateVisualState(calculatedSeverity, metrics) {
       const now = Date.now();
 
-      // 1. Alert Logic: Update sustain timer
       if (calculatedSeverity === 'critical') {
         alertExpiryTime = now + SUSTAIN_ALERT_MS;
       }
 
-      // 2. Determine Display State (check timer)
       let displaySeverity = calculatedSeverity;
-      
-      // If we are in a "cooling down" period from a critical alert, force critical display
       if (now < alertExpiryTime) {
         displaySeverity = 'critical';
       }
 
-      // 3. Apply to DOM
       const body = document.body;
       const pill = document.getElementById("status-pill");
       const text = document.getElementById("status-text");
       const sub = document.getElementById("status-sub");
 
-      // Reset Classes
       body.classList.remove('state-critical');
-      pill.className = "status-pill"; // clear modifiers
+      pill.className = "status-pill";
 
       if (displaySeverity === "critical") {
-        // -- CRITICAL UI --
-        body.classList.add('state-critical'); // Triggers red theme
+        body.classList.add('state-critical');
         pill.classList.add("pill-alert"); 
         text.textContent = "INTRUSION DETECTED";
         sub.textContent = "Active Deauthentication or Evil Twin signature matching.";
       } else if (displaySeverity === "warning") {
-        // -- WARNING UI --
         pill.classList.add("pill-warn");
         text.textContent = "Anomalous Traffic";
         sub.textContent = "Elevated probe requests or beacon spikes detected.";
       } else {
-        // -- NORMAL UI --
         pill.classList.add("pill-normal");
         text.textContent = "System Secure";
-        sub.textContent = "Monitoring wireless spectrum. No threats found.";
+        // Mode-specific hint appended to normal text via updateModeUI
       }
     }
 
@@ -542,7 +581,6 @@
       document.getElementById("card-probe").textContent = p.toLocaleString();
       document.getElementById("card-beacon").textContent = b.toLocaleString();
 
-      // Subtitles
       const subDeauth = document.getElementById("card-deauth-sub");
       subDeauth.innerHTML = (metrics && metrics.top_sender_deauth > 0)
         ? `<span style="color:var(--color-danger)">▲ ${metrics.top_sender_deauth} burst</span>`
@@ -573,13 +611,12 @@
       const tbody = document.getElementById("alerts-body");
       
       if (!alerts || alerts.length === 0) {
-        if(tbody.childElementCount === 0) {
-           tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 30px; color: var(--text-muted);">No recent security events.</td></tr>`;
+        if (tbody.childElementCount === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 30px; color: var(--text-muted);">No recent security events.</td></tr>`;
         }
         return;
       }
 
-      // Rebuild table
       tbody.innerHTML = "";
       const recent = alerts.slice(-30).reverse();
 
@@ -587,55 +624,48 @@
         const tr = document.createElement("tr");
         const details = a.details || {};
         
-        // 1. Severity / Type Column
         const tdKind = document.createElement("td");
         const spanKind = document.createElement("span");
         spanKind.classList.add("tag");
         const kind = a.kind || "UNKNOWN";
         
         if (kind.startsWith("THRESH_DEAUTH") || kind.includes("EVIL_TWIN")) {
-            spanKind.classList.add("tag-danger");
-            spanKind.innerHTML = `⚠️ ${kind.replace("THRESH_", "").replace("ANOMALY_", "")}`;
+          spanKind.classList.add("tag-danger");
+          spanKind.innerHTML = `⚠️ ${kind.replace("THRESH_", "").replace("ANOMALY_", "")}`;
         } else if (kind.startsWith("ANOMALY_")) {
-            spanKind.classList.add("tag-anom");
-            spanKind.textContent = kind.replace("ANOMALY_", "");
+          spanKind.classList.add("tag-anom");
+          spanKind.textContent = kind.replace("ANOMALY_", "");
         } else {
-            spanKind.classList.add("tag-info");
-            spanKind.textContent = kind;
+          spanKind.classList.add("tag-info");
+          spanKind.textContent = kind;
         }
         tdKind.appendChild(spanKind);
 
-        // 2. Timestamp Column
         const tdTime = document.createElement("td");
         tdTime.className = "time-col";
         const tsTo = a.ts_to || a.ts_from || 0;
         tdTime.textContent = formatTs(tsTo);
 
-        // 3. Target / Source Column
         const tdSource = document.createElement("td");
         tdSource.className = "source-col";
-        
         if (details.sender_mac) {
-            tdSource.innerHTML = `<span style="color:var(--text-muted)">Sender:</span> ${details.sender_mac}`;
+          tdSource.innerHTML = `<span style="color:var(--text-muted)">Sender:</span> ${details.sender_mac}`;
         } else if (details.bssid) {
-            tdSource.innerHTML = `<span style="color:var(--text-muted)">BSSID:</span> ${details.bssid}`;
+          tdSource.innerHTML = `<span style="color:var(--text-muted)">BSSID:</span> ${details.bssid}`;
         } else {
-            tdSource.textContent = "—";
+          tdSource.textContent = "—";
         }
 
-        // 4. Metrics & Thresholds Column
         const tdMetrics = document.createElement("td");
         tdMetrics.className = "metric-col";
-        
         let metricText = "";
         if (details.count_in_window !== undefined) {
-            metricText = `<strong>${details.count_in_window}</strong> pkts (Limit: ${details.threshold})`;
+          metricText = `<strong>${details.count_in_window}</strong> pkts (Limit: ${details.threshold})`;
         } else if (details.z !== undefined) {
-            metricText = `<strong>Z: ${details.z.toFixed(2)}</strong> (Limit: ${details.z_threshold})`;
+          metricText = `<strong>Z: ${details.z.toFixed(2)}</strong> (Limit: ${details.z_threshold})`;
         } else if (details.count !== undefined) {
-             metricText = `Count: ${details.count}`;
+          metricText = `Count: ${details.count}`;
         }
-
         tdMetrics.innerHTML = metricText;
 
         tr.appendChild(tdKind);
@@ -643,6 +673,62 @@
         tr.appendChild(tdSource);
         tr.appendChild(tdMetrics);
         tbody.appendChild(tr);
+      }
+    }
+
+    function updateModeUI(mode, learning) {
+      currentMode = mode || 'detection';
+
+      const btnDet = document.getElementById('mode-detection');
+      const btnLearn = document.getElementById('mode-learning');
+      const meta = document.getElementById('mode-meta');
+      const sub = document.getElementById('status-sub');
+
+      btnDet.classList.toggle('active', currentMode === 'detection');
+      btnLearn.classList.toggle('active', currentMode === 'learning');
+
+      if (!learning) {
+        if (currentMode === 'learning') {
+          meta.textContent = "Mode: Learning · collecting baseline statistics";
+          if (!document.body.classList.contains('state-critical')) {
+            sub.textContent = "Learning baselines from current traffic.";
+          }
+        } else {
+          meta.textContent = "Mode: Detection · baselines frozen";
+          if (!document.body.classList.contains('state-critical')) {
+            sub.textContent = "Monitoring wireless spectrum. No threats found.";
+          }
+        }
+        return;
+      }
+
+      const lw = learning.learn_windows || 0;
+      const rej = learning.learn_rejected_suspicious || 0;
+
+      if (currentMode === 'learning') {
+        meta.textContent = `Mode: Learning · accepted windows: ${lw} · rejected suspicious: ${rej}`;
+        if (!document.body.classList.contains('state-critical')) {
+          sub.textContent = "Learning baselines from traffic (safe windows only).";
+        }
+      } else {
+        meta.textContent = `Mode: Detection · learner windows: ${lw} (rejected: ${rej})`;
+        if (!document.body.classList.contains('state-critical')) {
+          sub.textContent = "Monitoring wireless spectrum. Baselines fixed to last calibration.";
+        }
+      }
+    }
+
+    async function changeMode(mode) {
+      try {
+        await fetch(MODE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mode }),
+        });
+        // Optimistically update UI; poll() will confirm
+        updateModeUI(mode, null);
+      } catch (e) {
+        console.error("Failed to set mode", e);
       }
     }
 
@@ -658,39 +744,45 @@
 
         const metrics = data.metrics;
         const alerts = data.alerts || [];
+        const mode = data.mode || "detection";
+        const learning = data.learning || null;
 
-        // Update Header Timestamp
         document.getElementById("ts-info").textContent = 
           metrics ? `Last updated: ${formatTs(metrics.ts_to)}` : "Live";
 
-        // 1. Severity & Visual State
         const severity = determineSeverity(alerts);
         updateVisualState(severity, metrics);
 
-        // 2. Metrics Cards
         updateCards(metrics);
 
-        // 3. Chart
         if (metrics) {
           const label = new Date(metrics.ts_to * 1000).toLocaleTimeString([],{minute:'2-digit', second:'2-digit'});
           updateChartData(label, metrics);
         }
 
-        // 4. Table
         updateAlertsTable(alerts);
+        updateModeUI(mode, learning);
 
       } catch (e) {
         console.error("poll error", e);
         document.getElementById("ts-info").textContent = "Connection Lost";
         document.getElementById("status-sub").textContent = "Cannot reach IDS server.";
-        document.getElementById("status-pill").classList.remove("pill-alert", "pill-warn", "pill-normal");
-        document.getElementById("status-pill").style.background = "#e2e8f0";
-        document.getElementById("status-pill").style.color = "#64748b";
+        const pill = document.getElementById("status-pill");
+        pill.classList.remove("pill-alert", "pill-warn", "pill-normal");
+        pill.style.background = "#e2e8f0";
+        pill.style.color = "#64748b";
         document.getElementById("status-text").textContent = "Offline";
       }
     }
 
-    // Start
+    // Attach mode button handlers
+    document.getElementById('mode-detection').addEventListener('click', () => {
+      if (currentMode !== 'detection') changeMode('detection');
+    });
+    document.getElementById('mode-learning').addEventListener('click', () => {
+      if (currentMode !== 'learning') changeMode('learning');
+    });
+
     poll();
     setInterval(poll, 1000);
   </script>

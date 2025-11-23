@@ -9,6 +9,9 @@ import sys
 import pyshark
 from typing import Optional
 
+import csv
+import os
+
 from ids_offline import IDS, pkt_to_event, load_config, PACKET_TYPES
 
 # ANSI colors
@@ -84,10 +87,107 @@ def format_metrics_row(m, color: bool = True) -> str:
     return _c(color, DIM, base)
 
 
+def _ensure_dir(path: str):
+    d = os.path.dirname(path)
+    if d:
+        os.makedirs(d, exist_ok=True)
+
+
+def _open_metrics_writer(path: Optional[str]):
+    """
+    Open metrics CSV in append mode and write header if new/empty.
+    Returns (file_obj, csv_writer) or (None, None) if no path.
+    """
+    if not path:
+        return None, None
+    _ensure_dir(path)
+    is_new = not os.path.exists(path) or os.path.getsize(path) == 0
+    f = open(path, "a", newline="")
+    w = csv.writer(f)
+    if is_new:
+        w.writerow(
+            [
+                "ts_from",
+                "ts_to",
+                "deauth_count",
+                "probe_count",
+                "beacon_count",
+                "eviltwin_max_distinct_bssids",
+                "top_sender_deauth",
+                "top_sender_probe",
+                "top_sender_beacon",
+                "top_bssid_deauth_count",
+                "top_bssid_deauth_mac",
+                "deauth_reason_top",
+                "deauth_reason_distinct",
+                "top_channel",
+                "top_channel_beacon_count",
+                "top_channel_deauth_count",
+            ]
+        )
+    return f, w
+
+
+def _open_alert_file(path: Optional[str]):
+    """
+    Open alerts JSONL file in append mode. Returns file_obj or None.
+    """
+    if not path:
+        return None
+    _ensure_dir(path)
+    return open(path, "a", buffering=1)
+
+
+def _flush_new_metrics_and_alerts(ids: IDS,
+                                  metrics_writer,
+                                  alerts_file,
+                                  last_metrics_idx: int,
+                                  last_alert_idx: int):
+    """
+    Append any new metrics rows and alerts since the last indices.
+    Returns updated (last_metrics_idx, last_alert_idx).
+    """
+    # Metrics
+    if metrics_writer:
+        while last_metrics_idx < len(ids.metrics):
+            m = ids.metrics[last_metrics_idx]
+            metrics_writer.writerow(
+                [
+                    m.ts_from,
+                    m.ts_to,
+                    m.deauth_count,
+                    m.probe_count,
+                    m.beacon_count,
+                    m.eviltwin_max_distinct_bssids,
+                    m.top_sender_deauth,
+                    m.top_sender_probe,
+                    m.top_sender_beacon,
+                    m.top_bssid_deauth_count,
+                    m.top_bssid_deauth_mac or "",
+                    m.deauth_reason_top if m.deauth_reason_top is not None else "",
+                    m.deauth_reason_distinct,
+                    m.top_channel if m.top_channel is not None else "",
+                    m.top_channel_beacon_count,
+                    m.top_channel_deauth_count,
+                ]
+            )
+            last_metrics_idx += 1
+
+    # Alerts
+    if alerts_file:
+        while last_alert_idx < len(ids.alerts):
+            a = ids.alerts[last_alert_idx]
+            alerts_file.write(json.dumps(asdict(a)) + "\n")
+            last_alert_idx += 1
+
+    return last_metrics_idx, last_alert_idx
+
+
 def process_stream(
     pkt_iter,
     ids: IDS,
     alerts_out: Optional[str],
+    metrics_out: Optional[str],
     print_events: bool,
     summary_every: float,
     use_color: bool,
@@ -95,10 +195,10 @@ def process_stream(
 ):
     last_alert_idx = 0
     last_summary_ts = 0.0
+    last_metrics_idx = 0
 
-    alert_file = None
-    if alerts_out:
-        alert_file = open(alerts_out, "a", buffering=1)
+    alert_file = _open_alert_file(alerts_out)
+    metrics_file, metrics_writer = _open_metrics_writer(metrics_out)
 
     try:
         for pkt in pkt_iter:
@@ -111,15 +211,10 @@ def process_stream(
 
             ids.ingest(ev)
 
-            # New alerts
-            if len(ids.alerts) > last_alert_idx:
-                new_alerts = ids.alerts[last_alert_idx:]
-                for a in new_alerts:
-                    obj = asdict(a)
-                    if alert_file:
-                        alert_file.write(json.dumps(obj) + "\n")
-                    print(format_alert(obj, color=use_color))
-                last_alert_idx = len(ids.alerts)
+            # Persist any new metrics / alerts
+            last_metrics_idx, last_alert_idx = _flush_new_metrics_and_alerts(
+                ids, metrics_writer, alert_file, last_metrics_idx, last_alert_idx
+            )
 
             # Periodic stats from latest metrics row
             if summary_every > 0 and len(ids.metrics) > 0:
@@ -129,14 +224,21 @@ def process_stream(
                     last_summary_ts = latest.ts_to
 
     finally:
+        # For both live and replay, finalize to flush the last partial window
+        ids.finalize()
+        last_metrics_idx, last_alert_idx = _flush_new_metrics_and_alerts(
+            ids, metrics_writer, alert_file, last_metrics_idx, last_alert_idx
+        )
+
         if alert_file:
             alert_file.close()
-        # For offline replay, make sure we flush final windows
-        if not is_live:
-            ids.finalize()
-            if summary_every > 0 and len(ids.metrics) > 0:
-                latest = ids.metrics[-1]
-                print(format_metrics_row(latest, color=use_color))
+        if metrics_file:
+            metrics_file.close()
+
+        # For offline replay, we may want a final stats line
+        if not is_live and summary_every > 0 and len(ids.metrics) > 0:
+            latest = ids.metrics[-1]
+            print(format_metrics_row(latest, color=use_color))
 
 
 def run_live(
@@ -145,6 +247,7 @@ def run_live(
     display_filter: str,
     reset_baselines: bool = False,
     alerts_out: Optional[str] = None,
+    metrics_out: Optional[str] = None,
     print_events: bool = False,
     summary_every: float = 5.0,
     use_color: bool = True,
@@ -178,6 +281,7 @@ def run_live(
         pkt_iter=cap.sniff_continuously(),
         ids=ids,
         alerts_out=alerts_out,
+        metrics_out=metrics_out,
         print_events=print_events,
         summary_every=summary_every,
         use_color=use_color,
@@ -191,6 +295,7 @@ def run_replay_pcap(
     display_filter: str,
     reset_baselines: bool = False,
     alerts_out: Optional[str] = None,
+    metrics_out: Optional[str] = None,
     print_events: bool = False,
     summary_every: float = 5.0,
     use_color: bool = True,
@@ -217,6 +322,7 @@ def run_replay_pcap(
         pkt_iter=cap,
         ids=ids,
         alerts_out=alerts_out,
+        metrics_out=metrics_out,
         print_events=print_events,
         summary_every=summary_every,
         use_color=use_color,
@@ -238,6 +344,7 @@ def main():
         help="Wireshark display filter (management frames by default)",
     )
     ap.add_argument("--alerts-out", default="", help="Optional JSONL file for alerts")
+    ap.add_argument("--metrics-out", default="", help="Optional CSV file for metrics")
     ap.add_argument("--reset-baselines", action="store_true")
     ap.add_argument("--print-events", action="store_true", help="Print every analyzed packet")
     ap.add_argument(
@@ -255,6 +362,7 @@ def main():
 
     use_color = not args.no_color
     alerts_out = args.alerts_out or None
+    metrics_out = args.metrics_out or None
 
     # Require exactly one of --iface or --pcap
     if bool(args.iface) == bool(args.pcap):
@@ -268,6 +376,7 @@ def main():
             display_filter=args.display_filter,
             reset_baselines=args.reset_baselines,
             alerts_out=alerts_out,
+            metrics_out=metrics_out,
             print_events=args.print_events,
             summary_every=args.summary_every,
             use_color=use_color,
@@ -279,6 +388,7 @@ def main():
             display_filter=args.display_filter,
             reset_baselines=args.reset_baselines,
             alerts_out=alerts_out,
+            metrics_out=metrics_out,
             print_events=args.print_events,
             summary_every=args.summary_every,
             use_color=use_color,

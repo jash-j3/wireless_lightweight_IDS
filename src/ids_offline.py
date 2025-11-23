@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from __future__ import annotations
 from dataclasses import dataclass, asdict
 from enum import Enum, auto
@@ -51,6 +52,12 @@ DEFAULT_CFG = {
     "alerting": {
         "cooldown_sec": 5.0,
     },
+    # NEW: continuous learning / safe gating
+    "learning": {
+        # windows with |z| >= safe_z_gate OR with hard rule-based alerts
+        # are NOT used to update the learner baseline
+        "safe_z_gate": 6.0,
+    },
 }
 
 
@@ -93,10 +100,13 @@ class MetricsRow:
     top_sender_deauth: int
     top_sender_probe: int
     top_sender_beacon: int
+
     top_bssid_deauth_count: int
     top_bssid_deauth_mac: Optional[str]
+
     deauth_reason_top: Optional[int]
     deauth_reason_distinct: int
+
     top_channel: Optional[int]
     top_channel_beacon_count: int
     top_channel_deauth_count: int
@@ -109,20 +119,40 @@ class Alert:
     kind: str
     details: dict
 
+
 class RunningStats:
     def __init__(self):
         self.n = 0
         self.mean = 0.0
         self.M2 = 0.0
+
     def seed(self, mean: float, std: float, n: int = 50):
-        self.n = max(2, int(n)); self.mean = float(mean); self.M2 = (std ** 2) * (self.n - 1)
+        self.n = max(2, int(n))
+        self.mean = float(mean)
+        self.M2 = (std ** 2) * (self.n - 1)
+
     def update(self, x: float):
-        self.n += 1; d = x - self.mean; self.mean += d / self.n; self.M2 += d * (x - self.mean)
+        self.n += 1
+        d = x - self.mean
+        self.mean += d / self.n
+        self.M2 += d * (x - self.mean)
+
     @property
-    def var(self): return self.M2 / (self.n - 1) if self.n > 1 else 0.0
+    def var(self):
+        return self.M2 / (self.n - 1) if self.n > 1 else 0.0
+
     @property
-    def std(self): return math.sqrt(self.var) if self.var > 0 else 0.0
-    def z(self, x: float) -> float: s = self.std or 1.0; return (x - self.mean) / s
+    def std(self):
+        return math.sqrt(self.var) if self.var > 0 else 0.0
+
+    def z(self, x: float) -> float:
+        s = self.std or 1.0
+        return (x - self.mean) / s
+
+    def copy_from(self, other: "RunningStats"):
+        self.n = other.n
+        self.mean = other.mean
+        self.M2 = other.M2
 
 
 class IDS:
@@ -148,41 +178,79 @@ class IDS:
         self.use_z = bool(cfg["anomaly"].get("use_zscore", True))
         self.z_thr = float(cfg["anomaly"].get("z_threshold", 3.0))
 
-        self.sender: Dict[str, Dict] = {}
-        self.ssid_to_bssid_times: Dict[str, Deque[Tuple[float, str]]] = defaultdict(deque)
-        self.bssid_deauth: Dict[str, Deque[float]] = defaultdict(deque)
-        self.deauth_reason: Dict[int, Deque[float]] = defaultdict(deque)
+        # NEW: mode + learning config
+        self.mode = str(cfg.get("mode", "detection")).lower()  # "learning" / "detection"
+        lcfg = cfg.get("learning", {})
+        self.safe_z_gate = float(lcfg.get("safe_z_gate", 6.0))
+        self.learn_windows = 0
+        self.learn_rejected_suspicious = 0
+        self._window_hard_alert = False
 
+        # Per sender stats
+        self.sender: Dict[str, Dict] = {}
+
+        # Evil twin
+        self.ssid_to_bssid_times: Dict[str, Deque[Tuple[float, str]]] = defaultdict(deque)
+
+        # Per-BSSID deauth lens
+        self.bssid_deauth: Dict[str, Deque[float]] = defaultdict(deque)
+
+        # Reason-code tracking
+        self.deauth_reason: Dict[int, Deque[float]] = defaultdict(deque)
         dr_cfg = cfg.get("deauth_reason", {})
         self.reason_div_thresh = int(dr_cfg.get("distinct_threshold", 3))
         self.common_reason_codes = {int(x) for x in dr_cfg.get("common_whitelist", [1, 4, 8])}
 
+        # Channel awareness
         self.chan_beacon: Dict[int, Deque[float]] = defaultdict(deque)
         self.chan_deauth: Dict[int, Deque[float]] = defaultdict(deque)
         ch_cfg = cfg.get("channel", {})
         self.beacon_spike_min = int(ch_cfg.get("beacon_spike_min_count", 50))
         self.beacon_spike_ratio = float(ch_cfg.get("beacon_spike_dom_ratio", 2.0))
 
+        # Alert rate limiting
         alert_cfg = cfg.get("alerting", {})
         self.alert_cooldown = float(alert_cfg.get("cooldown_sec", 5.0))
         self.last_fired: Dict[Tuple[str, str], float] = {}
 
+        # Time bookkeeping
         self.first_ts: Optional[float] = None
         self.next_calc: Optional[float] = None
         self.last_ts: Optional[float] = None
 
+        # Streaming stats (detection baselines)
         self.rs_deauth = RunningStats()
         self.rs_probe = RunningStats()
         self.rs_beacon = RunningStats()
+        # Continuous-learning stats (learner baselines)
+        self.rs_learn_deauth = RunningStats()
+        self.rs_learn_probe = RunningStats()
+        self.rs_learn_beacon = RunningStats()
 
+        # Baselines from config
         if not reset_baselines and "baselines" in cfg:
-            b = cfg["baselines"]; n = int(b.get("n", 50))
-            if "deauth" in b: self.rs_deauth.seed(b["deauth"].get("mean", 0.0), b["deauth"].get("std", 1.0), n)
-            if "probe"  in b: self.rs_probe .seed(b["probe"] .get("mean", 0.0), b["probe"] .get("std", 1.0), n)
-            if "beacon" in b: self.rs_beacon.seed(b["beacon"].get("mean", 0.0), b["beacon"].get("std", 1.0), n)
+            b = cfg["baselines"]
+            n = int(b.get("n", 50))
+            if "deauth" in b:
+                m = b["deauth"].get("mean", 0.0)
+                s = b["deauth"].get("std", 1.0)
+                self.rs_deauth.seed(m, s, n)
+                self.rs_learn_deauth.seed(m, s, n)
+            if "probe" in b:
+                m = b["probe"].get("mean", 0.0)
+                s = b["probe"].get("std", 1.0)
+                self.rs_probe.seed(m, s, n)
+                self.rs_learn_probe.seed(m, s, n)
+            if "beacon" in b:
+                m = b["beacon"].get("mean", 0.0)
+                s = b["beacon"].get("std", 1.0)
+                self.rs_beacon.seed(m, s, n)
+                self.rs_learn_beacon.seed(m, s, n)
 
         self.alerts: List[Alert] = []
         self.metrics: List[MetricsRow] = []
+
+    # ----------------- internal helpers -----------------
 
     def _get_or_make(self, sender: str):
         el = self.sender.get(sender)
@@ -208,7 +276,14 @@ class IDS:
         if last is not None and ts_from < last + self.alert_cooldown:
             return
         self.last_fired[k] = ts_from
+
+        # Mark hard alerts for learning-gating (anything that isn't INFO_* or ANOMALY_*)
+        if not kind.startswith("INFO_") and not kind.startswith("ANOMALY_"):
+            self._window_hard_alert = True
+
         self.alerts.append(Alert(ts_from, ts_to, kind, details))
+
+    # ----------------- per-type processors -----------------
 
     def _proc_deauth(self, ev: PacketEvent):
         if ev.sender_mac:
@@ -217,14 +292,17 @@ class IDS:
             dq.append(ev.ts)
             self._prune(dq, ev.ts, self.win[PACKET_TYPES.DEAUTH])
             el["total"] += 1
+
         if ev.bssid:
             dq_b = self.bssid_deauth[ev.bssid]
             dq_b.append(ev.ts)
             self._prune(dq_b, ev.ts, self.win[PACKET_TYPES.DEAUTH])
+
         if ev.reason_code is not None:
             dq_r = self.deauth_reason[ev.reason_code]
             dq_r.append(ev.ts)
             self._prune(dq_r, ev.ts, self.win[PACKET_TYPES.DEAUTH])
+
         if ev.channel is not None:
             dq_c = self.chan_deauth[ev.channel]
             dq_c.append(ev.ts)
@@ -246,16 +324,20 @@ class IDS:
             dq.append(ev.ts)
             self._prune(dq, ev.ts, self.win[PACKET_TYPES.BEACON])
             el["total"] += 1
+
         if ev.ssid and ev.bssid:
             dq2 = self.ssid_to_bssid_times[ev.ssid]
             dq2.append((ev.ts, ev.bssid))
             cut = ev.ts - self.ev_win
             while dq2 and dq2[0][0] < cut:
                 dq2.popleft()
+
         if ev.channel is not None:
             dq_c = self.chan_beacon[ev.channel]
             dq_c.append(ev.ts)
             self._prune(dq_c, ev.ts, self.win[PACKET_TYPES.BEACON])
+
+    # ----------------- public ingest / finalize -----------------
 
     def ingest(self, ev: PacketEvent):
         if self.first_ts is None:
@@ -280,43 +362,42 @@ class IDS:
     def _compute_and_alert(self, window_end: float):
         if self.first_ts is None:
             return
-        ws = window_end - self.stats_interval
 
+        ws = window_end - self.stats_interval
+        self._window_hard_alert = False  # reset for this window
+
+        # Global counts and per-sender maxima
         g: Dict[PACKET_TYPES, int] = defaultdict(int)
         top_d = top_p = top_b = 0
 
-        # prune per-sender deques at the tick time before counting (window-accurate)
         for sender, el in self.sender.items():
             for t in (PACKET_TYPES.DEAUTH, PACKET_TYPES.PROBE_REQ, PACKET_TYPES.BEACON):
-                self._prune(el[t], window_end, self.win[t])
                 cnt = len(el[t])
                 g[t] += cnt
-                if t is PACKET_TYPES.DEAUTH:   top_d = max(top_d, cnt)
-                elif t is PACKET_TYPES.PROBE_REQ: top_p = max(top_p, cnt)
-                elif t is PACKET_TYPES.BEACON: top_b = max(top_b, cnt)
+                if t is PACKET_TYPES.DEAUTH:
+                    if cnt > top_d:
+                        top_d = cnt
+                elif t is PACKET_TYPES.PROBE_REQ:
+                    if cnt > top_p:
+                        top_p = cnt
+                elif t is PACKET_TYPES.BEACON:
+                    if cnt > top_b:
+                        top_b = cnt
+
                 if cnt > self.thresh[t]:
                     self._add_alert(
                         f"THRESH_{t.name}_PER_SENDER",
-                        ws, window_end,
-                        {"sender_mac": sender, "count_in_window": cnt, "threshold": self.thresh[t]},
+                        ws,
+                        window_end,
+                        {
+                            "sender_mac": sender,
+                            "count_in_window": cnt,
+                            "threshold": self.thresh[t],
+                        },
                         key=sender,
                     )
 
-        if self.use_z:
-            z_d = self.rs_deauth.z(g[PACKET_TYPES.DEAUTH]); self.rs_deauth.update(g[PACKET_TYPES.DEAUTH])
-            z_p = self.rs_probe .z(g[PACKET_TYPES.PROBE_REQ]); self.rs_probe .update(g[PACKET_TYPES.PROBE_REQ])
-            z_b = self.rs_beacon.z(g[PACKET_TYPES.BEACON]);  self.rs_beacon.update(g[PACKET_TYPES.BEACON])
-            if z_d >= self.z_thr:
-                self._add_alert("ANOMALY_DEAUTH_GLOBAL_Z", ws, window_end,
-                                {"z": z_d, "count": g[PACKET_TYPES.DEAUTH], "z_threshold": self.z_thr}, key="DEAUTH")
-            if z_p >= self.z_thr:
-                self._add_alert("ANOMALY_PROBE_REQ_GLOBAL_Z", ws, window_end,
-                                {"z": z_p, "count": g[PACKET_TYPES.PROBE_REQ], "z_threshold": self.z_thr}, key="PROBE_REQ")
-            if z_b >= self.z_thr:
-                self._add_alert("ANOMALY_BEACON_GLOBAL_Z", ws, window_end,
-                                {"z": z_b, "count": g[PACKET_TYPES.BEACON], "z_threshold": self.z_thr}, key="BEACON")
-
-        # per-BSSID deauth (prune at tick)
+        # Per-BSSID deauth maxima + alerts
         top_bssid_cnt = 0
         top_bssid_mac: Optional[str] = None
         for bssid, dq in self.bssid_deauth.items():
@@ -328,32 +409,40 @@ class IDS:
             if cnt > self.thresh_deauth_bssid:
                 self._add_alert(
                     "THRESH_DEAUTH_PER_BSSID",
-                    ws, window_end,
-                    {"bssid": bssid, "count_in_window": cnt, "threshold": self.thresh_deauth_bssid},
+                    ws,
+                    window_end,
+                    {
+                        "bssid": bssid,
+                        "count_in_window": cnt,
+                        "threshold": self.thresh_deauth_bssid,
+                    },
                     key=bssid,
                 )
 
-        # evil twin (also prune at tick for accuracy)
+        # Evil-twin detection
         ev_max = 0
         for ssid, dq in self.ssid_to_bssid_times.items():
-            cut = window_end - self.ev_win
-            while dq and dq[0][0] < cut:
-                dq.popleft()
             distinct = len({b for (_, b) in dq})
             ev_max = max(ev_max, distinct)
             if distinct > self.ev_thresh:
                 self._add_alert(
                     "EVIL_TWIN_SUSPECT",
-                    ws, window_end,
-                    {"ssid": ssid, "distinct_bssids_in_window": distinct, "threshold": self.ev_thresh},
+                    ws,
+                    window_end,
+                    {
+                        "ssid": ssid,
+                        "distinct_bssids_in_window": distinct,
+                        "threshold": self.ev_thresh,
+                    },
                     key=ssid,
                 )
 
-        # reason-code metrics (prune at tick) + INFO note
+        # Reason-code metrics and INFO note
         deauth_reason_top: Optional[int] = None
         deauth_reason_top_cnt = 0
         deauth_reason_distinct = 0
         uncommon_reasons = set()
+
         for rc, dq in self.deauth_reason.items():
             self._prune(dq, window_end, self.win[PACKET_TYPES.DEAUTH])
             cnt = len(dq)
@@ -364,20 +453,25 @@ class IDS:
                     deauth_reason_top = rc
                 if rc not in self.common_reason_codes:
                     uncommon_reasons.add(rc)
+
         if deauth_reason_distinct >= self.reason_div_thresh:
             self._add_alert(
                 "INFO_DEAUTH_REASON_DIVERSITY",
-                ws, window_end,
-                {"distinct_reasons": deauth_reason_distinct,
-                 "top_reason": deauth_reason_top,
-                 "uncommon_reasons": sorted(uncommon_reasons)},
+                ws,
+                window_end,
+                {
+                    "distinct_reasons": deauth_reason_distinct,
+                    "top_reason": deauth_reason_top,
+                    "uncommon_reasons": sorted(uncommon_reasons),
+                },
                 key="GLOBAL_DEAUTH_REASON",
             )
 
-        # channel metrics (prune at tick)
+        # Channel-level metrics + optional INFO on beacon spike
         top_channel: Optional[int] = None
         top_channel_beacon_count = 0
         second_best_beacon = 0
+
         for ch, dq in self.chan_beacon.items():
             self._prune(dq, window_end, self.win[PACKET_TYPES.BEACON])
             cnt = len(dq)
@@ -387,12 +481,14 @@ class IDS:
                 top_channel = ch
             elif cnt > second_best_beacon:
                 second_best_beacon = cnt
+
         top_channel_deauth_count = 0
         for ch, dq in self.chan_deauth.items():
             self._prune(dq, window_end, self.win[PACKET_TYPES.DEAUTH])
             cnt = len(dq)
             if cnt > top_channel_deauth_count:
                 top_channel_deauth_count = cnt
+
         if (
             top_channel is not None
             and top_channel_beacon_count >= self.beacon_spike_min
@@ -400,21 +496,102 @@ class IDS:
         ):
             self._add_alert(
                 "INFO_BEACON_SPIKE_ON_CHANNEL",
-                ws, window_end,
-                {"channel": top_channel, "top_count": top_channel_beacon_count,
-                 "second_best": second_best_beacon, "min_count": self.beacon_spike_min,
-                 "dom_ratio": self.beacon_spike_ratio},
+                ws,
+                window_end,
+                {
+                    "channel": top_channel,
+                    "top_count": top_channel_beacon_count,
+                    "second_best": second_best_beacon,
+                    "min_count": self.beacon_spike_min,
+                    "dom_ratio": self.beacon_spike_ratio,
+                },
                 key=str(top_channel),
             )
 
+        # Z-scores using detection baseline (rs_deauth/probe/beacon)
+        z_d = z_p = z_b = 0.0
+        if self.use_z:
+            z_d = self.rs_deauth.z(g[PACKET_TYPES.DEAUTH])
+            z_p = self.rs_probe.z(g[PACKET_TYPES.PROBE_REQ])
+            z_b = self.rs_beacon.z(g[PACKET_TYPES.BEACON])
+
+        max_abs_z = max(abs(z_d), abs(z_p), abs(z_b)) if self.use_z else 0.0
+        suspicious = self._window_hard_alert or (self.use_z and max_abs_z >= self.safe_z_gate)
+
+        # Anomaly alerts (global z-score)
+        if self.use_z:
+            if z_d >= self.z_thr:
+                self._add_alert(
+                    "ANOMALY_DEAUTH_GLOBAL_Z",
+                    ws,
+                    window_end,
+                    {
+                        "z": z_d,
+                        "count": g[PACKET_TYPES.DEAUTH],
+                        "z_threshold": self.z_thr,
+                    },
+                    key="DEAUTH",
+                )
+            if z_p >= self.z_thr:
+                self._add_alert(
+                    "ANOMALY_PROBE_REQ_GLOBAL_Z",
+                    ws,
+                    window_end,
+                    {
+                        "z": z_p,
+                        "count": g[PACKET_TYPES.PROBE_REQ],
+                        "z_threshold": self.z_thr,
+                    },
+                    key="PROBE_REQ",
+                )
+            if z_b >= self.z_thr:
+                self._add_alert(
+                    "ANOMALY_BEACON_GLOBAL_Z",
+                    ws,
+                    window_end,
+                    {
+                        "z": z_b,
+                        "count": g[PACKET_TYPES.BEACON],
+                        "z_threshold": self.z_thr,
+                    },
+                    key="BEACON",
+                )
+
+        # Continuous learner: only update with safe windows
+        if self.use_z:
+            if not suspicious:
+                self.rs_learn_deauth.update(g[PACKET_TYPES.DEAUTH])
+                self.rs_learn_probe.update(g[PACKET_TYPES.PROBE_REQ])
+                self.rs_learn_beacon.update(g[PACKET_TYPES.BEACON])
+                self.learn_windows += 1
+            else:
+                self.learn_rejected_suspicious += 1
+
+            # If in learning mode, sync detection baseline from learner
+            if self.mode == "learning" and self.rs_learn_deauth.n > 0:
+                self.rs_deauth.copy_from(self.rs_learn_deauth)
+                self.rs_probe.copy_from(self.rs_learn_probe)
+                self.rs_beacon.copy_from(self.rs_learn_beacon)
+
+        # Metrics row
         self.metrics.append(
             MetricsRow(
-                ws, window_end,
-                g[PACKET_TYPES.DEAUTH], g[PACKET_TYPES.PROBE_REQ], g[PACKET_TYPES.BEACON],
-                ev_max, top_d, top_p, top_b,
-                top_bssid_cnt, top_bssid_mac,
-                deauth_reason_top, deauth_reason_distinct,
-                top_channel, top_channel_beacon_count, top_channel_deauth_count,
+                ws,
+                window_end,
+                g[PACKET_TYPES.DEAUTH],
+                g[PACKET_TYPES.PROBE_REQ],
+                g[PACKET_TYPES.BEACON],
+                ev_max,
+                top_d,
+                top_p,
+                top_b,
+                top_bssid_cnt,
+                top_bssid_mac,
+                deauth_reason_top,
+                deauth_reason_distinct,
+                top_channel,
+                top_channel_beacon_count,
+                top_channel_deauth_count,
             )
         )
 
@@ -435,6 +612,7 @@ def _iter_layers(pkt):
     for ly in getattr(pkt, "layers", []):
         yield ly
 
+
 def _first_field_attr(pkt, layer_candidates, field_candidates):
     for ly in _iter_layers(pkt):
         lname = (ly.layer_name or "").lower()
@@ -451,6 +629,7 @@ def _first_field_attr(pkt, layer_candidates, field_candidates):
                     pass
     return None
 
+
 def _first_field_any(pkt, layer_candidates, dotted_candidates, underscore_candidates):
     for ly in _iter_layers(pkt):
         lname = (ly.layer_name or "").lower()
@@ -464,6 +643,7 @@ def _first_field_any(pkt, layer_candidates, dotted_candidates, underscore_candid
             except Exception:
                 pass
     return _first_field_attr(pkt, layer_candidates, underscore_candidates)
+
 
 def _to_int(x) -> Optional[int]:
     if x is None:
@@ -503,11 +683,22 @@ def pkt_to_event(pkt) -> Optional[PacketEvent]:
     st_raw = _first_field_any(
         pkt,
         layer_candidates=L_WLAN,
-        dotted_candidates=["wlan.fc.type_subtype", "wlan.fc.subtype", "wlan.subtype"],
-        underscore_candidates=["fc_type_subtype", "fc_subtype", "subtype", "wlan_fc_type_subtype", "wlan_fc_subtype", "type_subtype"],
+        dotted_candidates=[
+            "wlan.fc.type_subtype",
+            "wlan.fc.subtype",
+            "wlan.subtype",
+        ],
+        underscore_candidates=[
+            "fc_type_subtype",
+            "fc_subtype",
+            "subtype",
+            "wlan_fc_type_subtype",
+            "wlan_fc_subtype",
+            "type_subtype",
+        ],
     )
     st_i = _to_int(st_raw)
-    ptype = SUBTYPE_TO_TYPE_INT.get(st_i, PACKET_TYPES.OTHER) # type: ignore
+    ptype = SUBTYPE_TO_TYPE_INT.get(st_i, PACKET_TYPES.OTHER)  # type: ignore
 
     sa = _first_field_any(pkt, L_WLAN, ["wlan.sa", "wlan.ta"], ["sa", "ta"])
     da = _first_field_any(pkt, L_WLAN, ["wlan.da", "wlan.ra"], ["da", "ra"])
@@ -518,7 +709,12 @@ def pkt_to_event(pkt) -> Optional[PacketEvent]:
     if ssid == "":
         ssid = None
 
-    chan_s = _first_field_any(pkt, {"wlan_radio", "radiotap", "wlan"}, ["wlan_radio.channel"], ["channel"])
+    chan_s = _first_field_any(
+        pkt,
+        {"wlan_radio", "radiotap", "wlan"},
+        ["wlan_radio.channel"],
+        ["channel"],
+    )
     try:
         chan = int(chan_s) if chan_s is not None and str(chan_s).isdigit() else None
     except Exception:
@@ -602,13 +798,16 @@ def main():
             f.write(json.dumps(asdict(a)) + "\n")
 
     os.makedirs(os.path.dirname(args.metrics_out), exist_ok=True)
+
     if args.debug_fields > 0:
         cap_dbg = pyshark.FileCapture(args.pcap, keep_packets=False, use_json=True)
         try:
             for i, p in enumerate(cap_dbg):
                 print(f"\n--- DEBUG packet #{i} ---")
                 for ly in getattr(p, "layers", []):
-                    print(f"  LAYER: {ly.layer_name}  fields={getattr(ly,'field_names', [])}")
+                    print(
+                        f"  LAYER: {ly.layer_name}  fields={getattr(ly,'field_names', [])}"
+                    )
                 if i + 1 >= args.debug_fields:
                     break
         finally:
@@ -660,6 +859,7 @@ def main():
 
     if args.print_metrics_head > 0:
         from itertools import islice
+
         print("\n[Metrics head]")
         with open(args.metrics_out) as f:
             for line in islice(f, args.print_metrics_head + 1):
@@ -669,6 +869,7 @@ def main():
         f"\n[Ingest] packets_read={pkts_seen}  "
         f"events_parsed={evs}  windows={len(metrics)}  alerts={len(alerts)}"
     )
+
 
 if __name__ == "__main__":
     main()

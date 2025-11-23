@@ -1,0 +1,40 @@
+thresholds:
+  deauth_per_sec: 0
+  probe_req_per_sec: 74
+  beacon_per_sec: 20
+  deauth_per_sec_bssid: 0
+windows_sec:
+  deauth: 5
+  probe_req: 5
+  beacon: 5
+  stats_interval: 1
+  evil_twin_window: 5
+evil_twin:
+  distinct_bssids_threshold: 3
+anomaly:
+  use_zscore: true
+  z_threshold: 3.0
+deauth_reason:
+  distinct_threshold: 3
+  common_whitelist:
+  - 1
+  - 4
+  - 8
+channel:
+  beacon_spike_min_count: 100
+  beacon_spike_dom_ratio: 2.0
+alerting:
+  cooldown_sec: 5.0
+learning:
+  safe_z_gate: 6.0
+baselines:
+  n: 99
+  deauth:
+    mean: 0.0
+    std: 1.0
+  probe:
+    mean: 11.525252525252526
+    std: 20.55263920939558
+  beacon:
+    mean: 8.95959595959596
+    std: 3.5729601566762255
