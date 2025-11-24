@@ -1,52 +1,40 @@
 thresholds:
-  deauth_per_sec: 2
-  probe_req_per_sec: 50
-  beacon_per_sec: 200
-  # New: per-BSSID deauth threshold (same scale as per-sender)
-  deauth_per_sec_bssid: 2
-
+  deauth_per_sec: 1
+  probe_req_per_sec: 4
+  beacon_per_sec: 66
+  deauth_per_sec_bssid: 1
 windows_sec:
   deauth: 5
   probe_req: 5
   beacon: 5
   stats_interval: 1
   evil_twin_window: 5
-
 evil_twin:
   distinct_bssids_threshold: 3
-
 anomaly:
   use_zscore: true
   z_threshold: 3.0
-
-# New: deauth reason-code monitoring (informational only)
 deauth_reason:
-  # Raise INFO_DEAUTH_REASON_DIVERSITY if distinct reasons in a window ≥ this
   distinct_threshold: 3
-  # Reason codes you consider “common” in your lab
-  common_whitelist: [1, 4, 8]
-
-# New: channel-level beacon/deauth awareness
+  common_whitelist:
+  - 1
+  - 4
+  - 8
 channel:
-  # Minimum beacon count on top channel in a window to consider a spike
   beacon_spike_min_count: 100
-  # Top channel must be ≥ this multiple of the second-best channel
   beacon_spike_dom_ratio: 2.0
-
-# New: gentle alert rate limiting (per alert kind + key)
 alerting:
   cooldown_sec: 5.0
-
-# Optional: seed baselines (unchanged)
+learning:
+  safe_z_gate: 6.0
 baselines:
-  # n is "confidence"/weight; 30–100 is typical. Larger n means updates move slow.
   n: 50
   deauth:
-    mean: 1.0
-    std: 1.0
+    mean: 0.0
+    std: 0.7548294124240689
   probe:
-    mean: 5.0
-    std: 3.0
+    mean: 0.40096230954290296
+    std: 0.8470811348136704
   beacon:
-    mean: 50.0
-    std: 10.0
+    mean: 34.647153167602255
+    std: 14.594053799925634

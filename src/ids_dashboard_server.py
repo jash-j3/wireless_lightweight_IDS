@@ -19,6 +19,11 @@ import uvicorn
 
 from ids_offline import IDS, pkt_to_event, load_config
 
+try:
+    import yaml  # type: ignore
+except Exception:
+    yaml = None
+
 app = FastAPI()
 
 app.add_middleware(
@@ -79,11 +84,13 @@ def _open_alert_file(path: Optional[str]):
     return open(path, "a", buffering=1)
 
 
-def _flush_new_metrics_and_alerts(ids: IDS,
-                                  metrics_writer,
-                                  alerts_file,
-                                  last_metrics_idx: int,
-                                  last_alert_idx: int):
+def _flush_new_metrics_and_alerts(
+    ids: IDS,
+    metrics_writer,
+    alerts_file,
+    last_metrics_idx: int,
+    last_alert_idx: int,
+):
     if metrics_writer:
         while last_metrics_idx < len(ids.metrics):
             m = ids.metrics[last_metrics_idx]
@@ -262,7 +269,6 @@ def get_state():
             for a in ids.alerts[-50:]:
                 recent_alerts.append(asdict(a))
 
-        # Learning / baseline info
         def rs_snapshot(rs) -> Dict[str, Any]:
             return {"mean": rs.mean, "std": rs.std, "n": rs.n}
 
@@ -324,6 +330,52 @@ def set_mode(update: ModeUpdate):
     return {"ok": True, "mode": m}
 
 
+def _save_learned_baselines_to_config(cfg_path: str, ids: IDS, min_windows: int = 30):
+    if yaml is None:
+        print("[WARN] pyyaml not available; cannot save learned baselines.")
+        return
+
+    learn_windows = getattr(ids, "learn_windows", 0)
+    if learn_windows < min_windows:
+        print(
+            f"[INFO] Not saving baselines: only {learn_windows} safe learning windows "
+            f"(need at least {min_windows})."
+        )
+        return
+
+    try:
+        with open(cfg_path, "r") as f:
+            cfg_raw = yaml.safe_load(f) or {}
+    except FileNotFoundError:
+        cfg_raw = {}
+
+    if not isinstance(cfg_raw, dict):
+        cfg_raw = {}
+
+    b = cfg_raw.get("baselines", {})
+    if not isinstance(b, dict):
+        b = {}
+
+    def upd(name: str, rs):
+        if getattr(rs, "n", 0) <= 0:
+            return
+        std_val = rs.std if rs.std > 0 else 1.0
+        b[name] = {"mean": float(rs.mean), "std": float(std_val)}
+
+    upd("deauth", ids.rs_learn_deauth)
+    upd("probe", ids.rs_learn_probe)
+    upd("beacon", ids.rs_learn_beacon)
+
+    b["n"] = int(max(learn_windows, b.get("n", 0)))
+    cfg_raw["baselines"] = b
+
+    _ensure_dir(cfg_path)
+    with open(cfg_path, "w") as f:
+        yaml.safe_dump(cfg_raw, f, sort_keys=False)
+
+    print(f"[INFO] Saved learned baselines to {cfg_path} (learn_windows={learn_windows})")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Wi-Fi IDS dashboard server (live or pcap replay)")
     parser.add_argument("--iface", help="Monitor-mode interface (e.g., wlp0s20f3mon)")
@@ -353,6 +405,11 @@ def main():
         default="learning",
         help="Initial baseline mode for this run",
     )
+    parser.add_argument(
+        "--save-learned-baselines",
+        action="store_true",
+        help="On shutdown, update the given config file with learned baselines",
+    )
     args = parser.parse_args()
 
     if bool(args.iface) == bool(args.pcap):
@@ -377,7 +434,10 @@ def main():
         )
         CAPTURE_THREAD = t
         t.start()
-        print(f"[INFO] Live capture started on {args.iface}, mode={CURRENT_MODE}, API on http://{args.host}:{args.port}")
+        print(
+            f"[INFO] Live capture started on {args.iface}, mode={CURRENT_MODE}, "
+            f"API on http://{args.host}:{args.port}"
+        )
     else:
         t = threading.Thread(
             target=capture_loop_pcap,
@@ -393,7 +453,10 @@ def main():
         )
         CAPTURE_THREAD = t
         t.start()
-        print(f"[INFO] Replaying pcap='{args.pcap}', mode={CURRENT_MODE}, API on http://{args.host}:{args.port}")
+        print(
+            f"[INFO] Replaying pcap='{args.pcap}', mode={CURRENT_MODE}, "
+            f"API on http://{args.host}:{args.port}"
+        )
 
     try:
         uvicorn.run(app, host=args.host, port=args.port)
@@ -401,6 +464,14 @@ def main():
         RUN_CAPTURE = False
         if CAPTURE_THREAD is not None:
             CAPTURE_THREAD.join(timeout=2.0)
+
+        if args.save_learned_baselines:
+            with IDS_LOCK:
+                ids_ref = IDS_INSTANCE
+            if ids_ref is not None:
+                _save_learned_baselines_to_config(args.config, ids_ref)
+            else:
+                print("[INFO] No IDS instance available to save baselines.")
 
 
 if __name__ == "__main__":
