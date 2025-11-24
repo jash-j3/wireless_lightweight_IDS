@@ -423,7 +423,7 @@
     const API_URL = "http://localhost:8000/api/state";
     const MODE_URL = "http://localhost:8000/api/mode";
 
-    const SUSTAIN_ALERT_MS = 5000;
+    const SUSTAIN_ALERT_MS = 2000;
     let alertExpiryTime = 0; 
     let currentVisualState = 'normal';
     let currentMode = 'detection';
@@ -554,7 +554,7 @@
         body.classList.add('state-critical');
         pill.classList.add("pill-alert"); 
         text.textContent = "INTRUSION DETECTED";
-        sub.textContent = "Active Deauthentication or Evil Twin signature matching.";
+        sub.textContent = "Active Deauthentication or Probe Attack signature matching.";
       } else if (displaySeverity === "warning") {
         pill.classList.add("pill-warn");
         text.textContent = "Anomalous Traffic";

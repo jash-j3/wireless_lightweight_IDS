@@ -387,8 +387,11 @@ def main():
     thr_beacon_win = choose_threshold_normal_attack(stats_beacon, None)
 
     thr_deauth = int(math.ceil(thr_deauth_win))
+    thr_deauth = thr_deauth if thr_deauth > 0 else 1
     thr_probe = int(math.ceil(thr_probe_win))
+    thr_probe = thr_probe if thr_probe > 0 else 1
     thr_beacon = int(math.ceil(thr_beacon_win))
+    thr_beacon = thr_beacon if thr_beacon > 0 else 1
 
     cfg.setdefault("thresholds", {})
     cfg["thresholds"]["deauth_per_sec"] = thr_deauth
