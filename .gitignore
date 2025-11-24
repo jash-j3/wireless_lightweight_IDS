@@ -2,3 +2,4 @@
 venv/
 data/pcaps/*.pcap
 src/__pycache__
+/.vscode/
