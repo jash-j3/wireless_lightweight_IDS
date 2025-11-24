@@ -1,2 +1,6 @@
-scapy
-
+fastapi==0.121.3
+matplotlib==3.10.7
+numpy==2.3.4
+pyshark==0.6
+PyYAML==6.0.3
+uvicorn==0.38.0
