@@ -107,11 +107,11 @@ It supports both **offline pcap analysis** and **live monitoring** with a real-t
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/<your-user>/wireless_lightweight_ids.git
+git clone https://github.com/jash-j3/wireless_lightweight_ids.git
 cd wireless_lightweight_ids
-````
+```
 
-### 2. Create and Activate Virtual Environment (Optional but Recommended)
+### 2. Create and Activate Virtual Environment
 
 ```bash
 python3 -m venv .venv
@@ -119,6 +119,16 @@ source .venv/bin/activate
 ```
 
 ### 3. Install Python Dependencies
+
+Can be done via `requirements.txt` or manually.
+
+Using `requirements.txt`:
+
+```bash
+pip install -r requirements.txt
+```
+
+Or manually:
 
 ```bash
 pip install pyshark fastapi uvicorn pyyaml
