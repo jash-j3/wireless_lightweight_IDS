@@ -1,7 +1,7 @@
 thresholds:
   deauth_per_sec: 1
-  probe_req_per_sec: 4
-  beacon_per_sec: 66
+  probe_req_per_sec: 134
+  beacon_per_sec: 253
   deauth_per_sec_bssid: 1
 windows_sec:
   deauth: 5
@@ -21,20 +21,20 @@ deauth_reason:
   - 4
   - 8
 channel:
-  beacon_spike_min_count: 100
+  beacon_spike_min_count: 200
   beacon_spike_dom_ratio: 2.0
 alerting:
   cooldown_sec: 5.0
 learning:
   safe_z_gate: 6.0
 baselines:
-  n: 50
+  n: 249
   deauth:
     mean: 0.0
-    std: 0.7548294124240689
+    std: 1.0
   probe:
-    mean: 0.40096230954290296
-    std: 0.8470811348136704
+    mean: 36.41767068273092
+    std: 32.24520525666042
   beacon:
-    mean: 34.647153167602255
-    std: 14.594053799925634
+    mean: 157.71485943775102
+    std: 31.64643752640686

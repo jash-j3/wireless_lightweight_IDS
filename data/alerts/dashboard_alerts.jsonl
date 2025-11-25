@@ -1647,3 +1647,347 @@
 {"ts_from": 1764023798.4460957, "ts_to": 1764023799.4460957, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "5c:a6:e6:43:3a:44", "count_in_window": 2, "threshold": 1}}
 {"ts_from": 1764023803.4460957, "ts_to": 1764023804.4460957, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "5c:a6:e6:43:3a:44", "count_in_window": 2, "threshold": 1}}
 {"ts_from": 1764023808.4460957, "ts_to": 1764023809.4460957, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "5c:a6:e6:43:3a:44", "count_in_window": 2, "threshold": 1}}
+{"ts_from": 1764057509.8986585, "ts_to": 1764057510.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.1350379828906383, "count": 3, "z_threshold": 3.0}}
+{"ts_from": 1764057509.8986585, "ts_to": 1764057510.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 4.145136742017414, "count": 98, "z_threshold": 3.0}}
+{"ts_from": 1764057510.8986585, "ts_to": 1764057511.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057510.8986585, "ts_to": 1764057511.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 144, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057512.8986585, "ts_to": 1764057513.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057514.8986585, "ts_to": 1764057515.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 15.062467926218126, "count": 14, "z_threshold": 3.0}}
+{"ts_from": 1764057514.8986585, "ts_to": 1764057515.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 8.364681782815172, "count": 181, "z_threshold": 3.0}}
+{"ts_from": 1764057515.8986585, "ts_to": 1764057516.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057515.8986585, "ts_to": 1764057516.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 155, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057517.8986585, "ts_to": 1764057518.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057519.8986585, "ts_to": 1764057520.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 16.17284932624655, "count": 15, "z_threshold": 3.0}}
+{"ts_from": 1764057519.8986585, "ts_to": 1764057520.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 8.248909792241857, "count": 179, "z_threshold": 3.0}}
+{"ts_from": 1764057520.8986585, "ts_to": 1764057521.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057520.8986585, "ts_to": 1764057521.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 176, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057522.8986585, "ts_to": 1764057523.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057524.8986585, "ts_to": 1764057525.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 16.17284932624655, "count": 15, "z_threshold": 3.0}}
+{"ts_from": 1764057524.8986585, "ts_to": 1764057525.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 7.8437078252352554, "count": 172, "z_threshold": 3.0}}
+{"ts_from": 1764057525.8986585, "ts_to": 1764057526.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057525.8986585, "ts_to": 1764057526.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 153, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057527.8986585, "ts_to": 1764057528.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057529.8986585, "ts_to": 1764057530.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 18.393612126303392, "count": 17, "z_threshold": 3.0}}
+{"ts_from": 1764057529.8986585, "ts_to": 1764057530.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 6.6859879195021055, "count": 152, "z_threshold": 3.0}}
+{"ts_from": 1764057530.8986585, "ts_to": 1764057531.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057530.8986585, "ts_to": 1764057531.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 154, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057532.8986585, "ts_to": 1764057533.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057534.8986585, "ts_to": 1764057535.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 20.614374926360238, "count": 19, "z_threshold": 3.0}}
+{"ts_from": 1764057534.8986585, "ts_to": 1764057535.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 8.017365811095228, "count": 175, "z_threshold": 3.0}}
+{"ts_from": 1764057535.8986585, "ts_to": 1764057536.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057535.8986585, "ts_to": 1764057536.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 163, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057537.8986585, "ts_to": 1764057538.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057539.8986585, "ts_to": 1764057540.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 20.614374926360238, "count": 19, "z_threshold": 3.0}}
+{"ts_from": 1764057539.8986585, "ts_to": 1764057540.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 7.26484787236868, "count": 162, "z_threshold": 3.0}}
+{"ts_from": 1764057540.8986585, "ts_to": 1764057541.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057540.8986585, "ts_to": 1764057541.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 156, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057542.8986585, "ts_to": 1764057543.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057544.8986585, "ts_to": 1764057545.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 20.614374926360238, "count": 19, "z_threshold": 3.0}}
+{"ts_from": 1764057544.8986585, "ts_to": 1764057545.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 6.280785952495504, "count": 145, "z_threshold": 3.0}}
+{"ts_from": 1764057545.8986585, "ts_to": 1764057546.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057545.8986585, "ts_to": 1764057546.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 138, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057547.8986585, "ts_to": 1764057548.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057549.8986585, "ts_to": 1764057550.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 22.835137726417084, "count": 21, "z_threshold": 3.0}}
+{"ts_from": 1764057549.8986585, "ts_to": 1764057550.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 8.538339768675145, "count": 184, "z_threshold": 3.0}}
+{"ts_from": 1764057550.8986585, "ts_to": 1764057551.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057550.8986585, "ts_to": 1764057551.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 172, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057552.8986585, "ts_to": 1764057553.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057554.8986585, "ts_to": 1764057555.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 22.835137726417084, "count": 21, "z_threshold": 3.0}}
+{"ts_from": 1764057554.8986585, "ts_to": 1764057555.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 8.943541735681746, "count": 191, "z_threshold": 3.0}}
+{"ts_from": 1764057555.8986585, "ts_to": 1764057556.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057555.8986585, "ts_to": 1764057556.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 147, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057557.8986585, "ts_to": 1764057558.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057559.8986585, "ts_to": 1764057560.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 22.835137726417084, "count": 21, "z_threshold": 3.0}}
+{"ts_from": 1764057559.8986585, "ts_to": 1764057560.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 5.528268013768956, "count": 132, "z_threshold": 3.0}}
+{"ts_from": 1764057560.8986585, "ts_to": 1764057561.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057560.8986585, "ts_to": 1764057561.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 138, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057562.8986585, "ts_to": 1764057563.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057564.8986585, "ts_to": 1764057565.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 22.835137726417084, "count": 21, "z_threshold": 3.0}}
+{"ts_from": 1764057564.8986585, "ts_to": 1764057565.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 7.785821829948597, "count": 171, "z_threshold": 3.0}}
+{"ts_from": 1764057565.8986585, "ts_to": 1764057566.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057565.8986585, "ts_to": 1764057566.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 163, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057567.8986585, "ts_to": 1764057568.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057569.8986585, "ts_to": 1764057570.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 22.835137726417084, "count": 21, "z_threshold": 3.0}}
+{"ts_from": 1764057569.8986585, "ts_to": 1764057570.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 4.717864079755752, "count": 118, "z_threshold": 3.0}}
+{"ts_from": 1764057570.8986585, "ts_to": 1764057571.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057570.8986585, "ts_to": 1764057571.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 104, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057572.8986585, "ts_to": 1764057573.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057574.8986585, "ts_to": 1764057575.8986585, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 25.05590052647393, "count": 23, "z_threshold": 3.0}}
+{"ts_from": 1764057574.8986585, "ts_to": 1764057575.8986585, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 5.701925999628928, "count": 135, "z_threshold": 3.0}}
+{"ts_from": 1764057575.8986585, "ts_to": 1764057576.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "ce:83:2e:8b:28:8e", "count_in_window": 5, "threshold": 4}}
+{"ts_from": 1764057575.8986585, "ts_to": 1764057576.8986585, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 106, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057577.8986585, "ts_to": 1764057578.8986585, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "2e:74:ba:a4:44:20", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057968.6563835, "ts_to": 1764057969.6563835, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.9968142995662426, "count": 97, "z_threshold": 3.0}}
+{"ts_from": 1764057969.6563835, "ts_to": 1764057970.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 120, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057971.6563835, "ts_to": 1764057972.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 5.123845102856807, "count": 5, "z_threshold": 3.0}}
+{"ts_from": 1764057973.6563835, "ts_to": 1764057974.6563835, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.2346631634201177, "count": 136, "z_threshold": 3.0}}
+{"ts_from": 1764057974.6563835, "ts_to": 1764057975.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 135, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057976.6563835, "ts_to": 1764057977.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057976.6563835, "ts_to": 1764057977.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 6.487193443807746, "count": 11, "z_threshold": 3.0}}
+{"ts_from": 1764057979.6563835, "ts_to": 1764057980.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 148, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057979.6563835, "ts_to": 1764057980.6563835, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.046311214301337, "count": 154, "z_threshold": 3.0}}
+{"ts_from": 1764057981.6563835, "ts_to": 1764057982.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057981.6563835, "ts_to": 1764057982.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 7.765867311574799, "count": 13, "z_threshold": 3.0}}
+{"ts_from": 1764057984.6563835, "ts_to": 1764057985.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 189, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057984.6563835, "ts_to": 1764057985.6563835, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 4.306599446704615, "count": 198, "z_threshold": 3.0}}
+{"ts_from": 1764057985.6563835, "ts_to": 1764057986.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "36:17:8d:9c:ca:09", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057986.6563835, "ts_to": 1764057987.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057986.6563835, "ts_to": 1764057987.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 14.159236650410062, "count": 23, "z_threshold": 3.0}}
+{"ts_from": 1764057989.6563835, "ts_to": 1764057990.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 161, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057989.6563835, "ts_to": 1764057990.6563835, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.8196699023669844, "count": 181, "z_threshold": 3.0}}
+{"ts_from": 1764057990.6563835, "ts_to": 1764057991.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "36:17:8d:9c:ca:09", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057991.6563835, "ts_to": 1764057992.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057991.6563835, "ts_to": 1764057992.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 16.07724745206064, "count": 26, "z_threshold": 3.0}}
+{"ts_from": 1764057994.6563835, "ts_to": 1764057995.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 142, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057994.6563835, "ts_to": 1764057995.6563835, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.8483128167397864, "count": 182, "z_threshold": 3.0}}
+{"ts_from": 1764057995.6563835, "ts_to": 1764057996.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "36:17:8d:9c:ca:09", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057996.6563835, "ts_to": 1764057997.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764057996.6563835, "ts_to": 1764057997.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 17.355921319827694, "count": 28, "z_threshold": 3.0}}
+{"ts_from": 1764057999.6563835, "ts_to": 1764058000.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 155, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764057999.6563835, "ts_to": 1764058000.6563835, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.1322399574197424, "count": 157, "z_threshold": 3.0}}
+{"ts_from": 1764058000.6563835, "ts_to": 1764058001.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "36:17:8d:9c:ca:09", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058001.6563835, "ts_to": 1764058002.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058001.6563835, "ts_to": 1764058002.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 17.355921319827694, "count": 28, "z_threshold": 3.0}}
+{"ts_from": 1764058004.6563835, "ts_to": 1764058005.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 139, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058005.6563835, "ts_to": 1764058006.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "36:17:8d:9c:ca:09", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058006.6563835, "ts_to": 1764058007.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058006.6563835, "ts_to": 1764058007.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 17.355921319827694, "count": 28, "z_threshold": 3.0}}
+{"ts_from": 1764058006.6563835, "ts_to": 1764058007.6563835, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.074954128674139, "count": 155, "z_threshold": 3.0}}
+{"ts_from": 1764058009.6563835, "ts_to": 1764058010.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 153, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058010.6563835, "ts_to": 1764058011.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "36:17:8d:9c:ca:09", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058011.6563835, "ts_to": 1764058012.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058011.6563835, "ts_to": 1764058012.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 17.355921319827694, "count": 28, "z_threshold": 3.0}}
+{"ts_from": 1764058011.6563835, "ts_to": 1764058012.6563835, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.2181687005381474, "count": 160, "z_threshold": 3.0}}
+{"ts_from": 1764058014.6563835, "ts_to": 1764058015.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 157, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058015.6563835, "ts_to": 1764058016.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "36:17:8d:9c:ca:09", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058016.6563835, "ts_to": 1764058017.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058016.6563835, "ts_to": 1764058017.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 17.355921319827694, "count": 28, "z_threshold": 3.0}}
+{"ts_from": 1764058019.6563835, "ts_to": 1764058020.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 116, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058020.6563835, "ts_to": 1764058021.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "36:17:8d:9c:ca:09", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058021.6563835, "ts_to": 1764058022.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058021.6563835, "ts_to": 1764058022.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 17.355921319827694, "count": 28, "z_threshold": 3.0}}
+{"ts_from": 1764058024.6563835, "ts_to": 1764058025.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 121, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058025.6563835, "ts_to": 1764058026.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "36:17:8d:9c:ca:09", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058026.6563835, "ts_to": 1764058027.6563835, "kind": "THRESH_PROBE_REQ_PER_SENDER", "details": {"sender_mac": "fe:5b:8c:ec:fb:ba", "count_in_window": 6, "threshold": 4}}
+{"ts_from": 1764058026.6563835, "ts_to": 1764058027.6563835, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 19.27393212147827, "count": 31, "z_threshold": 3.0}}
+{"ts_from": 1764058027.6563835, "ts_to": 1764058028.6563835, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.1035970430469404, "count": 156, "z_threshold": 3.0}}
+{"ts_from": 1764058029.6563835, "ts_to": 1764058030.6563835, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 127, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058044.5523536, "ts_to": 1764058045.5523536, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.35822762042401, "count": 84, "z_threshold": 3.0}}
+{"ts_from": 1764058045.5523536, "ts_to": 1764058046.5523536, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 110, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058049.5523536, "ts_to": 1764058050.5523536, "kind": "ANOMALY_BEACON_GLOBAL_Z", "details": {"z": 3.3387423819676356, "count": 135, "z_threshold": 3.0}}
+{"ts_from": 1764058050.5523536, "ts_to": 1764058051.5523536, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 114, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058050.5523536, "ts_to": 1764058051.5523536, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.039962879507027, "count": 3, "z_threshold": 3.0}}
+{"ts_from": 1764058055.5523536, "ts_to": 1764058056.5523536, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 135, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058059.5523536, "ts_to": 1764058060.5523536, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.564441380235773, "count": 5, "z_threshold": 3.0}}
+{"ts_from": 1764058060.5523536, "ts_to": 1764058061.5523536, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 168, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058064.5523536, "ts_to": 1764058065.5523536, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.132242532726886, "count": 6, "z_threshold": 3.0}}
+{"ts_from": 1764058065.5523536, "ts_to": 1764058066.5523536, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 142, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058153.112671, "ts_to": 1764058154.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 126, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058158.112671, "ts_to": 1764058159.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 157, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058163.112671, "ts_to": 1764058164.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 175, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058168.112671, "ts_to": 1764058169.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 152, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058173.112671, "ts_to": 1764058174.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 171, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058178.112671, "ts_to": 1764058179.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 146, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058183.112671, "ts_to": 1764058184.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 159, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058188.112671, "ts_to": 1764058189.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 168, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058193.112671, "ts_to": 1764058194.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 178, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058198.112671, "ts_to": 1764058199.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 198, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058203.112671, "ts_to": 1764058204.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 177, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058208.112671, "ts_to": 1764058209.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 171, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058213.112671, "ts_to": 1764058214.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 110, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058214.112671, "ts_to": 1764058215.112671, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.472241557477338, "count": 62, "z_threshold": 3.0}}
+{"ts_from": 1764058218.112671, "ts_to": 1764058219.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 165, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058221.112671, "ts_to": 1764058222.112671, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.071532330336343, "count": 67, "z_threshold": 3.0}}
+{"ts_from": 1764058223.112671, "ts_to": 1764058224.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 126, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058228.112671, "ts_to": 1764058229.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 126, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058233.112671, "ts_to": 1764058234.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 156, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058238.112671, "ts_to": 1764058239.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 134, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058243.112671, "ts_to": 1764058244.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 184, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058248.112671, "ts_to": 1764058249.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 131, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058253.112671, "ts_to": 1764058254.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 183, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058258.112671, "ts_to": 1764058259.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 177, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058263.112671, "ts_to": 1764058264.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 156, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058268.112671, "ts_to": 1764058269.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 182, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058273.112671, "ts_to": 1764058274.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 160, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058278.112671, "ts_to": 1764058279.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 157, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058283.112671, "ts_to": 1764058284.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 162, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764058288.112671, "ts_to": 1764058289.112671, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 174, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059575.673092, "ts_to": 1764059576.673092, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 131, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059580.673092, "ts_to": 1764059581.673092, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 170, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059585.673092, "ts_to": 1764059586.673092, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 170, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059614.7231166, "ts_to": 1764059615.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 125, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059619.7231166, "ts_to": 1764059620.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 217, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059624.7231166, "ts_to": 1764059625.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 205, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059629.7231166, "ts_to": 1764059630.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 194, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059634.7231166, "ts_to": 1764059635.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 179, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059639.7231166, "ts_to": 1764059640.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 150, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059644.7231166, "ts_to": 1764059645.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 172, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059649.7231166, "ts_to": 1764059650.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 164, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059654.7231166, "ts_to": 1764059655.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 202, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059659.7231166, "ts_to": 1764059660.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 153, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059664.7231166, "ts_to": 1764059665.7231166, "kind": "INFO_BEACON_SPIKE_ON_CHANNEL", "details": {"channel": 10, "top_count": 160, "second_best": 0, "min_count": 100, "dom_ratio": 2.0}}
+{"ts_from": 1764059837.3867037, "ts_to": 1764059838.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 11, "threshold": 1}}
+{"ts_from": 1764059837.3867037, "ts_to": 1764059838.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 2, "threshold": 1}}
+{"ts_from": 1764059837.3867037, "ts_to": 1764059838.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 13, "threshold": 1}}
+{"ts_from": 1764059837.3867037, "ts_to": 1764059838.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 14.439039627060689, "count": 15, "z_threshold": 3.0}}
+{"ts_from": 1764059842.3867037, "ts_to": 1764059843.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764059842.3867037, "ts_to": 1764059843.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764059842.3867037, "ts_to": 1764059843.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 77, "threshold": 1}}
+{"ts_from": 1764059842.3867037, "ts_to": 1764059843.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 89.55698891245714, "count": 91, "z_threshold": 3.0}}
+{"ts_from": 1764059847.3867037, "ts_to": 1764059848.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 38, "threshold": 1}}
+{"ts_from": 1764059847.3867037, "ts_to": 1764059848.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 43, "threshold": 1}}
+{"ts_from": 1764059847.3867037, "ts_to": 1764059848.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 77, "threshold": 1}}
+{"ts_from": 1764059847.3867037, "ts_to": 1764059848.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 81.64983635609963, "count": 83, "z_threshold": 3.0}}
+{"ts_from": 1764059852.3867037, "ts_to": 1764059853.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 52, "threshold": 1}}
+{"ts_from": 1764059852.3867037, "ts_to": 1764059853.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 55, "threshold": 1}}
+{"ts_from": 1764059852.3867037, "ts_to": 1764059853.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 107, "threshold": 1}}
+{"ts_from": 1764059852.3867037, "ts_to": 1764059853.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 107.34808216426157, "count": 109, "z_threshold": 3.0}}
+{"ts_from": 1764059857.3867037, "ts_to": 1764059858.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 29, "threshold": 1}}
+{"ts_from": 1764059857.3867037, "ts_to": 1764059858.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764059857.3867037, "ts_to": 1764059858.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 74, "threshold": 1}}
+{"ts_from": 1764059857.3867037, "ts_to": 1764059858.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 74.73107786928679, "count": 76, "z_threshold": 3.0}}
+{"ts_from": 1764059862.3867037, "ts_to": 1764059863.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 43, "threshold": 1}}
+{"ts_from": 1764059862.3867037, "ts_to": 1764059863.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 47, "threshold": 1}}
+{"ts_from": 1764059862.3867037, "ts_to": 1764059863.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 89, "threshold": 1}}
+{"ts_from": 1764059862.3867037, "ts_to": 1764059863.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059867.3867037, "ts_to": 1764059868.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 40, "threshold": 1}}
+{"ts_from": 1764059867.3867037, "ts_to": 1764059868.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 35, "threshold": 1}}
+{"ts_from": 1764059867.3867037, "ts_to": 1764059868.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 74, "threshold": 1}}
+{"ts_from": 1764059867.3867037, "ts_to": 1764059868.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 75.71947193883149, "count": 77, "z_threshold": 3.0}}
+{"ts_from": 1764059872.3867037, "ts_to": 1764059873.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 50, "threshold": 1}}
+{"ts_from": 1764059872.3867037, "ts_to": 1764059873.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 51, "threshold": 1}}
+{"ts_from": 1764059872.3867037, "ts_to": 1764059873.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 101, "threshold": 1}}
+{"ts_from": 1764059872.3867037, "ts_to": 1764059873.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 101.41771774699343, "count": 103, "z_threshold": 3.0}}
+{"ts_from": 1764059877.3867037, "ts_to": 1764059878.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 49, "threshold": 1}}
+{"ts_from": 1764059877.3867037, "ts_to": 1764059878.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 64, "threshold": 1}}
+{"ts_from": 1764059877.3867037, "ts_to": 1764059878.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 111, "threshold": 1}}
+{"ts_from": 1764059877.3867037, "ts_to": 1764059878.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 113.27844658152972, "count": 115, "z_threshold": 3.0}}
+{"ts_from": 1764059882.3867037, "ts_to": 1764059883.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 53, "threshold": 1}}
+{"ts_from": 1764059882.3867037, "ts_to": 1764059883.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764059882.3867037, "ts_to": 1764059883.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 97, "threshold": 1}}
+{"ts_from": 1764059882.3867037, "ts_to": 1764059883.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 97.46414146881467, "count": 99, "z_threshold": 3.0}}
+{"ts_from": 1764059887.3867037, "ts_to": 1764059888.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 36, "threshold": 1}}
+{"ts_from": 1764059887.3867037, "ts_to": 1764059888.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 54, "threshold": 1}}
+{"ts_from": 1764059887.3867037, "ts_to": 1764059888.3867037, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 67, "threshold": 1}}
+{"ts_from": 1764059887.3867037, "ts_to": 1764059888.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059892.3867037, "ts_to": 1764059893.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 36, "threshold": 1}}
+{"ts_from": 1764059892.3867037, "ts_to": 1764059893.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 54, "threshold": 1}}
+{"ts_from": 1764059892.3867037, "ts_to": 1764059893.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059897.3867037, "ts_to": 1764059898.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 36, "threshold": 1}}
+{"ts_from": 1764059897.3867037, "ts_to": 1764059898.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 54, "threshold": 1}}
+{"ts_from": 1764059897.3867037, "ts_to": 1764059898.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059902.3867037, "ts_to": 1764059903.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 36, "threshold": 1}}
+{"ts_from": 1764059902.3867037, "ts_to": 1764059903.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 54, "threshold": 1}}
+{"ts_from": 1764059902.3867037, "ts_to": 1764059903.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059907.3867037, "ts_to": 1764059908.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 36, "threshold": 1}}
+{"ts_from": 1764059907.3867037, "ts_to": 1764059908.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 54, "threshold": 1}}
+{"ts_from": 1764059907.3867037, "ts_to": 1764059908.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059912.3867037, "ts_to": 1764059913.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 36, "threshold": 1}}
+{"ts_from": 1764059912.3867037, "ts_to": 1764059913.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 54, "threshold": 1}}
+{"ts_from": 1764059912.3867037, "ts_to": 1764059913.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059917.3867037, "ts_to": 1764059918.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 36, "threshold": 1}}
+{"ts_from": 1764059917.3867037, "ts_to": 1764059918.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 54, "threshold": 1}}
+{"ts_from": 1764059917.3867037, "ts_to": 1764059918.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059922.3867037, "ts_to": 1764059923.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 36, "threshold": 1}}
+{"ts_from": 1764059922.3867037, "ts_to": 1764059923.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 54, "threshold": 1}}
+{"ts_from": 1764059922.3867037, "ts_to": 1764059923.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059927.3867037, "ts_to": 1764059928.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 36, "threshold": 1}}
+{"ts_from": 1764059927.3867037, "ts_to": 1764059928.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 54, "threshold": 1}}
+{"ts_from": 1764059927.3867037, "ts_to": 1764059928.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059932.3867037, "ts_to": 1764059933.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 36, "threshold": 1}}
+{"ts_from": 1764059932.3867037, "ts_to": 1764059933.3867037, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 54, "threshold": 1}}
+{"ts_from": 1764059932.3867037, "ts_to": 1764059933.3867037, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 90.54538298200184, "count": 92, "z_threshold": 3.0}}
+{"ts_from": 1764059982.9252758, "ts_to": 1764059983.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 3, "threshold": 1}}
+{"ts_from": 1764059982.9252758, "ts_to": 1764059983.9252758, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 4, "threshold": 1}}
+{"ts_from": 1764059982.9252758, "ts_to": 1764059983.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 4.272945648628008, "count": 4, "z_threshold": 3.0}}
+{"ts_from": 1764059983.9252758, "ts_to": 1764059984.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 8, "threshold": 1}}
+{"ts_from": 1764059987.9252758, "ts_to": 1764059988.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 49, "threshold": 1}}
+{"ts_from": 1764059987.9252758, "ts_to": 1764059988.9252758, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 97, "threshold": 1}}
+{"ts_from": 1764059987.9252758, "ts_to": 1764059988.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 104.68716839138621, "count": 98, "z_threshold": 3.0}}
+{"ts_from": 1764059988.9252758, "ts_to": 1764059989.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 48, "threshold": 1}}
+{"ts_from": 1764059992.9252758, "ts_to": 1764059993.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 41, "threshold": 1}}
+{"ts_from": 1764059992.9252758, "ts_to": 1764059993.9252758, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 78, "threshold": 1}}
+{"ts_from": 1764059992.9252758, "ts_to": 1764059993.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 84.39067656040316, "count": 79, "z_threshold": 3.0}}
+{"ts_from": 1764059993.9252758, "ts_to": 1764059994.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 39, "threshold": 1}}
+{"ts_from": 1764059997.9252758, "ts_to": 1764059998.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 47, "threshold": 1}}
+{"ts_from": 1764059997.9252758, "ts_to": 1764059998.9252758, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 87, "threshold": 1}}
+{"ts_from": 1764059997.9252758, "ts_to": 1764059998.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 94.00480426981619, "count": 88, "z_threshold": 3.0}}
+{"ts_from": 1764059998.9252758, "ts_to": 1764059999.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 42, "threshold": 1}}
+{"ts_from": 1764060002.9252758, "ts_to": 1764060003.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060002.9252758, "ts_to": 1764060003.9252758, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "64:66:b3:54:86:60", "count_in_window": 47, "threshold": 1}}
+{"ts_from": 1764060002.9252758, "ts_to": 1764060003.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 95.0730406819732, "count": 89, "z_threshold": 3.0}}
+{"ts_from": 1764060003.9252758, "ts_to": 1764060004.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060007.9252758, "ts_to": 1764060008.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060007.9252758, "ts_to": 1764060008.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 95.0730406819732, "count": 89, "z_threshold": 3.0}}
+{"ts_from": 1764060008.9252758, "ts_to": 1764060009.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060012.9252758, "ts_to": 1764060013.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060012.9252758, "ts_to": 1764060013.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 95.0730406819732, "count": 89, "z_threshold": 3.0}}
+{"ts_from": 1764060013.9252758, "ts_to": 1764060014.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060017.9252758, "ts_to": 1764060018.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060017.9252758, "ts_to": 1764060018.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 95.0730406819732, "count": 89, "z_threshold": 3.0}}
+{"ts_from": 1764060018.9252758, "ts_to": 1764060019.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060020.9252758, "ts_to": 1764060021.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060020.9252758, "ts_to": 1764060021.9252758, "kind": "THRESH_DEAUTH_PER_BSSID", "details": {"bssid": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060022.9252758, "ts_to": 1764060023.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060022.9252758, "ts_to": 1764060023.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 111.09658686432822, "count": 104, "z_threshold": 3.0}}
+{"ts_from": 1764060023.9252758, "ts_to": 1764060024.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060025.9252758, "ts_to": 1764060026.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060027.9252758, "ts_to": 1764060028.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060027.9252758, "ts_to": 1764060028.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 111.09658686432822, "count": 104, "z_threshold": 3.0}}
+{"ts_from": 1764060028.9252758, "ts_to": 1764060029.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060030.9252758, "ts_to": 1764060031.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060032.9252758, "ts_to": 1764060033.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060032.9252758, "ts_to": 1764060033.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 111.09658686432822, "count": 104, "z_threshold": 3.0}}
+{"ts_from": 1764060033.9252758, "ts_to": 1764060034.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060035.9252758, "ts_to": 1764060036.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060037.9252758, "ts_to": 1764060038.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060037.9252758, "ts_to": 1764060038.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 111.09658686432822, "count": 104, "z_threshold": 3.0}}
+{"ts_from": 1764060038.9252758, "ts_to": 1764060039.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060040.9252758, "ts_to": 1764060041.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060042.9252758, "ts_to": 1764060043.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060042.9252758, "ts_to": 1764060043.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 111.09658686432822, "count": 104, "z_threshold": 3.0}}
+{"ts_from": 1764060043.9252758, "ts_to": 1764060044.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060045.9252758, "ts_to": 1764060046.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060047.9252758, "ts_to": 1764060048.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060047.9252758, "ts_to": 1764060048.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 111.09658686432822, "count": 104, "z_threshold": 3.0}}
+{"ts_from": 1764060048.9252758, "ts_to": 1764060049.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060050.9252758, "ts_to": 1764060051.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060052.9252758, "ts_to": 1764060053.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060052.9252758, "ts_to": 1764060053.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 111.09658686432822, "count": 104, "z_threshold": 3.0}}
+{"ts_from": 1764060052.9252758, "ts_to": 1764060053.9252758, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.010703860788589, "count": 128, "z_threshold": 3.0}}
+{"ts_from": 1764060053.9252758, "ts_to": 1764060054.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060055.9252758, "ts_to": 1764060056.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060057.9252758, "ts_to": 1764060058.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060057.9252758, "ts_to": 1764060058.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 112.16482327648522, "count": 105, "z_threshold": 3.0}}
+{"ts_from": 1764060057.9252758, "ts_to": 1764060058.9252758, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.074405845997303, "count": 130, "z_threshold": 3.0}}
+{"ts_from": 1764060058.9252758, "ts_to": 1764060059.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060060.9252758, "ts_to": 1764060061.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060062.9252758, "ts_to": 1764060063.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060062.9252758, "ts_to": 1764060063.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 112.16482327648522, "count": 105, "z_threshold": 3.0}}
+{"ts_from": 1764060062.9252758, "ts_to": 1764060063.9252758, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.010703860788589, "count": 128, "z_threshold": 3.0}}
+{"ts_from": 1764060063.9252758, "ts_to": 1764060064.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060065.9252758, "ts_to": 1764060066.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060067.9252758, "ts_to": 1764060068.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060067.9252758, "ts_to": 1764060068.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 112.16482327648522, "count": 105, "z_threshold": 3.0}}
+{"ts_from": 1764060067.9252758, "ts_to": 1764060068.9252758, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.010703860788589, "count": 128, "z_threshold": 3.0}}
+{"ts_from": 1764060068.9252758, "ts_to": 1764060069.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060070.9252758, "ts_to": 1764060071.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060072.9252758, "ts_to": 1764060073.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060072.9252758, "ts_to": 1764060073.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 112.16482327648522, "count": 105, "z_threshold": 3.0}}
+{"ts_from": 1764060072.9252758, "ts_to": 1764060073.9252758, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.010703860788589, "count": 128, "z_threshold": 3.0}}
+{"ts_from": 1764060073.9252758, "ts_to": 1764060074.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060075.9252758, "ts_to": 1764060076.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060077.9252758, "ts_to": 1764060078.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060077.9252758, "ts_to": 1764060078.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 112.16482327648522, "count": 105, "z_threshold": 3.0}}
+{"ts_from": 1764060077.9252758, "ts_to": 1764060078.9252758, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.010703860788589, "count": 128, "z_threshold": 3.0}}
+{"ts_from": 1764060078.9252758, "ts_to": 1764060079.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060080.9252758, "ts_to": 1764060081.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060082.9252758, "ts_to": 1764060083.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060082.9252758, "ts_to": 1764060083.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 112.16482327648522, "count": 105, "z_threshold": 3.0}}
+{"ts_from": 1764060082.9252758, "ts_to": 1764060083.9252758, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.042554853392946, "count": 129, "z_threshold": 3.0}}
+{"ts_from": 1764060083.9252758, "ts_to": 1764060084.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
+{"ts_from": 1764060085.9252758, "ts_to": 1764060086.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "34:60:f9:f2:c0:b2", "count_in_window": 15, "threshold": 1}}
+{"ts_from": 1764060087.9252758, "ts_to": 1764060088.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "d6:4d:be:ac:ac:b1", "count_in_window": 44, "threshold": 1}}
+{"ts_from": 1764060087.9252758, "ts_to": 1764060088.9252758, "kind": "ANOMALY_DEAUTH_GLOBAL_Z", "details": {"z": 112.16482327648522, "count": 105, "z_threshold": 3.0}}
+{"ts_from": 1764060087.9252758, "ts_to": 1764060088.9252758, "kind": "ANOMALY_PROBE_REQ_GLOBAL_Z", "details": {"z": 3.042554853392946, "count": 129, "z_threshold": 3.0}}
+{"ts_from": 1764060088.9252758, "ts_to": 1764060089.9252758, "kind": "THRESH_DEAUTH_PER_SENDER", "details": {"sender_mac": "64:66:b3:54:86:60", "count_in_window": 45, "threshold": 1}}
