@@ -54,6 +54,26 @@
       color: rgba(255,255,255,0.9);
     }
 
+    /* --- FIX: Better visibility for Mode Toggle in Critical State --- */
+    body.state-critical .mode-meta {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    body.state-critical .mode-toggle {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    body.state-critical .mode-btn {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    body.state-critical .mode-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    body.state-critical .mode-btn.active {
+      background: #ffffff;
+      color: #ef4444;
+    }
+    /* ----------------------------------------------------------- */
+
     body.state-critical .status-pill {
       background: white;
       color: #ef4444;
@@ -360,7 +380,6 @@
         </div>
         <div class="refresh-badge" id="ts-info">Connecting...</div>
 
-        <!-- Mode toggle + learning info -->
         <div class="mode-toggle-container">
           <div class="mode-toggle">
             <button class="mode-btn active" id="mode-detection">Detection</button>
@@ -423,7 +442,7 @@
     const API_URL = "http://localhost:8000/api/state";
     const MODE_URL = "http://localhost:8000/api/mode";
 
-    const SUSTAIN_ALERT_MS = 2000;
+    const SUSTAIN_ALERT_MS = 500;
     let alertExpiryTime = 0; 
     let currentVisualState = 'normal';
     let currentMode = 'detection';
@@ -547,6 +566,11 @@
       const text = document.getElementById("status-text");
       const sub = document.getElementById("status-sub");
 
+      // --- FIX: Clear offline styles so CSS classes work again ---
+      pill.style.background = '';
+      pill.style.color = '';
+      // -----------------------------------------------------------
+
       body.classList.remove('state-critical');
       pill.className = "status-pill";
 
@@ -562,7 +586,6 @@
       } else {
         pill.classList.add("pill-normal");
         text.textContent = "System Secure";
-        // Mode-specific hint appended to normal text via updateModeUI
       }
     }
 
@@ -725,7 +748,6 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ mode }),
         });
-        // Optimistically update UI; poll() will confirm
         updateModeUI(mode, null);
       } catch (e) {
         console.error("Failed to set mode", e);
@@ -775,7 +797,6 @@
       }
     }
 
-    // Attach mode button handlers
     document.getElementById('mode-detection').addEventListener('click', () => {
       if (currentMode !== 'detection') changeMode('detection');
     });
