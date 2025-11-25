@@ -364,16 +364,19 @@ class IDS:
             return
 
         ws = window_end - self.stats_interval
-        self._window_hard_alert = False  # reset for this window
 
-        # Global counts and per-sender maxima
         g: Dict[PACKET_TYPES, int] = defaultdict(int)
         top_d = top_p = top_b = 0
 
         for sender, el in self.sender.items():
             for t in (PACKET_TYPES.DEAUTH, PACKET_TYPES.PROBE_REQ, PACKET_TYPES.BEACON):
-                cnt = len(el[t])
+                dq = el[t]
+                # NEW: prune based on current window end and this type’s window size
+                self._prune(dq, window_end, self.win[t])
+
+                cnt = len(dq)
                 g[t] += cnt
+
                 if t is PACKET_TYPES.DEAUTH:
                     if cnt > top_d:
                         top_d = cnt
@@ -396,6 +399,7 @@ class IDS:
                         },
                         key=sender,
                     )
+
 
         # Per-BSSID deauth maxima + alerts
         top_bssid_cnt = 0
